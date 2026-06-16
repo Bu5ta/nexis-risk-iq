@@ -1,4 +1,4 @@
-# NEXIS Risk & Control Intelligence
+# NEXIS Risk-IQ
 
 A production-grade multi-tenant SaaS executive dashboard for governance, risk, and compliance (GRC) management. Three demo tenants: National Revenue Authority (Government), Meridian Power & Utilities (Parastatal), Apex Financial Services Group (Private).
 

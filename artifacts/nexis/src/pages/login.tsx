@@ -31,7 +31,7 @@ export default function Login() {
           <div className="mx-auto w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
             <Shield className="w-10 h-10 text-primary" />
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">NEXIS Risk & Control</h1>
+          <h1 className="text-3xl font-bold tracking-tight">NEXIS Risk-IQ</h1>
           <p className="text-muted-foreground text-lg">Select a demo workspace to enter</p>
         </div>
 

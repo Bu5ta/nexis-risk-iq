@@ -69,7 +69,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             </div>
             <div className="flex flex-col">
               <span className="font-bold text-lg leading-tight tracking-tight">NEXIS</span>
-              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Intelligence</span>
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Risk-IQ</span>
             </div>
           </SidebarHeader>
           <SidebarContent>
