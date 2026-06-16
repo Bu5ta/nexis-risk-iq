@@ -21,13 +21,6 @@ export const controlStatusEnum = pgEnum("control_status", [
   "Escalated",
 ]);
 
-export const userRoleEnum = pgEnum("user_role", [
-  "Super Admin",
-  "Tenant Admin",
-  "Risk Manager",
-  "Department Owner",
-  "Executive Viewer",
-]);
 
 // ─── Tenants ──────────────────────────────────────────────────────────────────
 
@@ -40,6 +33,7 @@ export const tenants = pgTable("tenants", {
   description:      text("description").notNull().default(""),
   totalUsers:       integer("total_users").notNull().default(0),
   totalDepartments: integer("total_departments").notNull().default(0),
+  isDemo:           boolean("is_demo").notNull().default(false),
   createdAt:        timestamp("created_at").notNull().defaultNow(),
   updatedAt:        timestamp("updated_at").notNull().defaultNow(),
 });
@@ -144,14 +138,15 @@ export const activityFeed = pgTable("activity_feed", {
 // ─── Users ────────────────────────────────────────────────────────────────────
 
 export const users = pgTable("users", {
-  id:         text("id").primaryKey(),
-  tenantId:   text("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
-  name:       text("name").notNull(),
-  email:      text("email").notNull(),
-  role:       userRoleEnum("role").notNull().default("Executive Viewer"),
-  department: text("department").notNull(),
-  avatar:     text("avatar"),
-  lastActive: text("last_active").notNull(),
+  id:           text("id").primaryKey(),
+  tenantId:     text("tenant_id").notNull().references(() => tenants.id, { onDelete: "cascade" }),
+  name:         text("name").notNull(),
+  email:        text("email").notNull(),
+  role:         text("role").notNull().default("Risk Champion"),
+  department:   text("department").notNull(),
+  avatar:       text("avatar"),
+  lastActive:   text("last_active").notNull(),
+  passwordHash: text("password_hash"),
 });
 
 // ─── Reports ──────────────────────────────────────────────────────────────────

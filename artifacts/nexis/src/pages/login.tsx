@@ -1,104 +1,458 @@
-import React from "react";
+import React, { useState } from "react";
 import { useLocation } from "wouter";
-import { useListTenants } from "@workspace/api-client-react";
 import { useTenant } from "@/lib/tenant-context";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, Building2, User, UserCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
+import {
+  Shield,
+  Users,
+  BarChart3,
+  ArrowRight,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  Building2,
+  ChevronDown,
+  ChevronUp,
+  CheckCircle2,
+} from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL;
 
-export default function Login() {
-  const [, setLocation] = useLocation();
-  const { setTenant, setRole } = useTenant();
-  const { data: tenants, isLoading } = useListTenants();
+// ─── Role definitions ──────────────────────────────────────────────────────────
 
-  const handleLogin = (tenantId: string, role: string) => {
-    setTenant(tenantId);
-    setRole(role);
-    setLocation("/dashboard");
+const DEMO_ROLES = [
+  {
+    id: "Manager - Risk and Compliance",
+    label: "Manager — Risk and Compliance",
+    desc: "Full access: verify evidence, review ratings, manage dashboard",
+    color: "bg-violet-500/10 border-violet-500/30 text-violet-400",
+  },
+  {
+    id: "Risk Champion",
+    label: "Risk Champion",
+    desc: "Data entry: update controls, quarterly scores, evidence submission",
+    color: "bg-blue-500/10 border-blue-500/30 text-blue-400",
+  },
+  {
+    id: "Director / Head of Department",
+    label: "Director / Head of Department",
+    desc: "Review and confirm departmental ratings and evidence",
+    color: "bg-amber-500/10 border-amber-500/30 text-amber-400",
+  },
+  {
+    id: "Executive Management",
+    label: "Executive Management",
+    desc: "Dashboard overview, executive summaries and board reports",
+    color: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400",
+  },
+  {
+    id: "Risk Owner",
+    label: "Risk Owner",
+    desc: "Manage and track own assigned risks and control actions",
+    color: "bg-orange-500/10 border-orange-500/30 text-orange-400",
+  },
+];
+
+const DEMO_TENANTS = [
+  {
+    id: "ten-gov",
+    name: "National Revenue Authority",
+    sector: "Government",
+    country: "🇧🇼",
+    description: "Tax administration and fiscal oversight body",
+  },
+  {
+    id: "ten-para",
+    name: "Meridian Power & Utilities",
+    sector: "Parastatal",
+    country: "🇧🇼",
+    description: "State-owned energy generation and distribution",
+  },
+  {
+    id: "ten-priv",
+    name: "Apex Financial Services",
+    sector: "Private Sector",
+    country: "🇧🇼",
+    description: "Banking, insurance and investment management",
+  },
+];
+
+// ─── Feature highlights ────────────────────────────────────────────────────────
+
+const FEATURES = [
+  { icon: Shield, text: "Risk register with full control lifecycle management" },
+  { icon: BarChart3, text: "Executive dashboard with real-time KPIs and appetite tracking" },
+  { icon: Users, text: "Role-based access for all levels — from Risk Champions to Executive Management" },
+];
+
+// ─── Company Sign-In Panel ─────────────────────────────────────────────────────
+
+function CompanySignIn({ onBack }: { onBack: () => void }) {
+  const [, setLocation] = useLocation();
+  const { setTenant, setRole, setUser, setDemoMode } = useTenant();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Login failed. Please check your credentials.");
+        return;
+      }
+      setTenant(data.tenant.id);
+      setRole(data.user.role);
+      setUser({
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        department: data.user.department,
+        tenantId: data.user.tenantId,
+      });
+      setDemoMode(false);
+      toast.success(`Welcome back, ${data.user.name.split(" ")[0]}!`);
+      setLocation("/dashboard");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const roles = [
-    { id: "Super Admin", icon: Shield, desc: "Full system access" },
-    { id: "Risk Manager", icon: UserCheck, desc: "Manage risks and controls" },
-    { id: "Executive Viewer", icon: User, desc: "Read-only dashboard access" },
-  ];
-
   return (
-    <div className="min-h-[100dvh] w-full bg-background flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-4xl space-y-8">
-        <div className="text-center space-y-2">
-          {/* NEXIS logo */}
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <img
-              src={`${BASE}images/nexis-icon.svg`}
-              alt="NEXIS"
-              className="w-14 h-14 drop-shadow-[0_0_12px_rgba(0,212,255,0.5)]"
-            />
-            <div className="flex flex-col items-start">
-              <span className="text-3xl font-bold tracking-tight leading-tight">NEXIS</span>
-              <span className="text-xl font-light text-primary leading-tight">Risk-IQ</span>
-            </div>
-          </div>
-          <p className="text-muted-foreground text-lg">Select a demo workspace to enter</p>
+    <div className="flex flex-col h-full justify-center max-w-sm mx-auto w-full">
+      <button
+        onClick={onBack}
+        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-8 self-start transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
 
-          {/* Partnership strip */}
-          <div className="flex items-center justify-center gap-3 pt-2">
-            <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">In Partnership With</span>
-            <div className="bg-white rounded-xl overflow-hidden shadow-md flex items-center justify-center" style={{ width: 72, height: 72 }}>
-              <img
-                src={`${BASE}images/riskinteg-brochure.jpg`}
-                alt="RiskInteg Solution Services"
-                style={{ width: 68, height: 68, objectFit: 'contain' }}
-              />
-            </div>
-            <span className="text-base font-semibold text-foreground">RiskInteg Solution Services</span>
+      <h2 className="text-2xl font-bold mb-1">Sign in to your workspace</h2>
+      <p className="text-muted-foreground text-sm mb-8">
+        Enter your company credentials to access NEXIS Risk-IQ.
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="email">Work Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="you@yourorganisation.co.bw"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            required
+            autoFocus
+          />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="password">Password</Label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPw ? "text" : "password"}
+              placeholder="••••••••"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required
+              className="pr-10"
+            />
+            <button
+              type="button"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              onClick={() => setShowPw(v => !v)}
+              tabIndex={-1}
+            >
+              {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
         </div>
 
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[1, 2, 3].map(i => <Skeleton key={i} className="h-64 rounded-xl" />)}
+        {error && (
+          <p className="text-sm text-destructive bg-destructive/10 px-3 py-2 rounded-md">
+            {error}
+          </p>
+        )}
+
+        <Button type="submit" className="w-full" disabled={loading}>
+          {loading ? "Signing in…" : "Sign In"}
+          {!loading && <ArrowRight className="w-4 h-4 ml-2" />}
+        </Button>
+      </form>
+
+      <p className="text-xs text-muted-foreground mt-6 text-center">
+        Not onboarded yet?{" "}
+        <a href="mailto:info@riskinteg.co.bw" className="underline hover:text-foreground">
+          Contact RiskInteg
+        </a>{" "}
+        to get started.
+      </p>
+    </div>
+  );
+}
+
+// ─── Demo Picker ───────────────────────────────────────────────────────────────
+
+function DemoPicker({ onBack }: { onBack: () => void }) {
+  const [, setLocation] = useLocation();
+  const { setTenant, setRole, setUser, setDemoMode } = useTenant();
+  const [expandedTenant, setExpandedTenant] = useState<string | null>(DEMO_TENANTS[0].id);
+
+  const handleDemoLogin = (tenantId: string, tenantName: string, roleId: string) => {
+    setTenant(tenantId);
+    setRole(roleId);
+    setUser(null);
+    setDemoMode(true);
+    toast.success(`Entered demo: ${tenantName}`);
+    setLocation("/dashboard");
+  };
+
+  return (
+    <div className="flex flex-col h-full overflow-y-auto">
+      <button
+        onClick={onBack}
+        className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-6 self-start transition-colors shrink-0"
+      >
+        <ArrowLeft className="w-4 h-4" /> Back
+      </button>
+
+      <div className="mb-6 shrink-0">
+        <h2 className="text-2xl font-bold mb-1">Demo Environment</h2>
+        <p className="text-muted-foreground text-sm">
+          Choose an organisation and role to explore NEXIS Risk-IQ with realistic sample data.
+        </p>
+      </div>
+
+      <div className="space-y-3 overflow-y-auto">
+        {DEMO_TENANTS.map(tenant => (
+          <div
+            key={tenant.id}
+            className="border rounded-xl overflow-hidden bg-card transition-colors"
+          >
+            <button
+              className="w-full flex items-center justify-between p-4 text-left hover:bg-muted/30 transition-colors"
+              onClick={() => setExpandedTenant(v => v === tenant.id ? null : tenant.id)}
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <Building2 className="w-5 h-5 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <div className="font-semibold text-sm truncate">{tenant.name}</div>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <Badge variant="secondary" className="text-xs">{tenant.sector}</Badge>
+                    <span className="text-xs text-muted-foreground">{tenant.description}</span>
+                  </div>
+                </div>
+              </div>
+              {expandedTenant === tenant.id
+                ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
+                : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0 ml-2" />
+              }
+            </button>
+
+            {expandedTenant === tenant.id && (
+              <div className="border-t bg-muted/20">
+                <p className="text-xs text-muted-foreground px-4 pt-3 pb-2 font-medium uppercase tracking-wider">
+                  Select your role
+                </p>
+                <div className="grid grid-cols-1 gap-1.5 px-3 pb-3">
+                  {DEMO_ROLES.map(role => (
+                    <button
+                      key={role.id}
+                      className={`flex items-start gap-3 p-3 rounded-lg border text-left hover:opacity-90 transition-opacity ${role.color}`}
+                      onClick={() => handleDemoLogin(tenant.id, tenant.name, role.id)}
+                    >
+                      <CheckCircle2 className="w-4 h-4 mt-0.5 shrink-0 opacity-70" />
+                      <div>
+                        <div className="text-sm font-medium">{role.label}</div>
+                        <div className="text-xs opacity-70 mt-0.5">{role.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {tenants?.map((tenant) => (
-              <Card key={tenant.id} className="border-2 hover:border-primary/50 transition-colors">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building2 className="w-5 h-5 text-primary" />
-                    {tenant.name}
-                  </CardTitle>
-                  <CardDescription>{tenant.sector}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-sm text-muted-foreground mb-4">
-                    {tenant.description}
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Login As</div>
-                    {roles.map((role) => (
-                      <Button 
-                        key={role.id} 
-                        variant="outline" 
-                        className="w-full justify-start h-auto py-3"
-                        onClick={() => handleLogin(tenant.id, role.id)}
-                      >
-                        <role.icon className="w-4 h-4 mr-3 text-muted-foreground" />
-                        <div className="flex flex-col items-start text-left">
-                          <span className="text-sm font-medium">{role.id}</span>
-                          <span className="text-xs text-muted-foreground">{role.desc}</span>
-                        </div>
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+        ))}
+      </div>
+
+      <p className="text-xs text-muted-foreground mt-4 text-center shrink-0 pt-2 border-t">
+        Demo data is read from a realistic sample dataset — no real data is at risk.
+      </p>
+    </div>
+  );
+}
+
+// ─── Landing (default view) ────────────────────────────────────────────────────
+
+function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; onDemo: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-full text-center">
+      <div className="flex items-center gap-3 mb-6">
+        <img
+          src={`${BASE}images/nexis-icon.svg`}
+          alt="NEXIS"
+          className="w-12 h-12 drop-shadow-[0_0_16px_rgba(0,212,255,0.4)]"
+        />
+        <div className="text-left">
+          <div className="text-2xl font-bold tracking-tight leading-tight">NEXIS</div>
+          <div className="text-base font-light text-primary leading-tight">Risk-IQ</div>
+        </div>
+      </div>
+
+      <h1 className="text-3xl font-bold tracking-tight mb-3">
+        Governance, Risk &amp; Compliance<br />
+        <span className="text-primary">for Botswana organisations</span>
+      </h1>
+      <p className="text-muted-foreground max-w-sm mb-10">
+        The modern GRC platform built for public, parastatal, and private sector — manual-first, no IT integration required.
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md mb-10">
+        <button
+          onClick={onCompanyLogin}
+          className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 hover:bg-primary/10 hover:border-primary/70 transition-all group"
+        >
+          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+            <Shield className="w-6 h-6 text-primary" />
+          </div>
+          <div>
+            <div className="font-semibold text-sm">Sign In</div>
+            <div className="text-xs text-muted-foreground mt-0.5">Company workspace</div>
+          </div>
+        </button>
+
+        <button
+          onClick={onDemo}
+          className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-muted hover:border-muted-foreground/40 bg-muted/30 hover:bg-muted/50 transition-all group"
+        >
+          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+            <BarChart3 className="w-6 h-6 text-muted-foreground" />
+          </div>
+          <div>
+            <div className="font-semibold text-sm">Explore Demo</div>
+            <div className="text-xs text-muted-foreground mt-0.5">Try with sample data</div>
+          </div>
+        </button>
+      </div>
+
+      <ul className="space-y-2 text-left w-full max-w-sm">
+        {FEATURES.map((f, i) => (
+          <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
+            <f.icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+            {f.text}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+// ─── Root Login Page ───────────────────────────────────────────────────────────
+
+type View = "landing" | "company" | "demo";
+
+export default function Login() {
+  const [view, setView] = useState<View>("landing");
+
+  return (
+    <div className="min-h-[100dvh] w-full bg-background flex">
+      {/* ── Left branding panel ── */}
+      <div className="hidden lg:flex flex-col justify-between w-[420px] shrink-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 border-r border-border/50">
+        <div className="flex items-center gap-3">
+          <img
+            src={`${BASE}images/nexis-icon.svg`}
+            alt="NEXIS"
+            className="w-10 h-10 drop-shadow-[0_0_12px_rgba(0,212,255,0.5)]"
+          />
+          <div>
+            <div className="text-xl font-bold text-white leading-tight">NEXIS</div>
+            <div className="text-sm font-light text-primary/90 leading-tight">Risk-IQ</div>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <div>
+            <h2 className="text-3xl font-bold text-white leading-tight mb-3">
+              Your complete GRC platform
+            </h2>
+            <p className="text-slate-400 text-sm leading-relaxed">
+              Designed for Botswana's public and private sector organisations — from Risk Champions to Executive Management.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {FEATURES.map((f, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center shrink-0">
+                  <f.icon className="w-4 h-4 text-primary" />
+                </div>
+                <p className="text-slate-300 text-sm leading-snug mt-1">{f.text}</p>
+              </div>
             ))}
           </div>
-        )}
+
+          <div className="rounded-xl border border-slate-700/50 bg-slate-800/50 p-4">
+            <div className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Trusted RBAC roles</div>
+            <div className="flex flex-col gap-1.5">
+              {DEMO_ROLES.map(r => (
+                <div key={r.id} className="flex items-center gap-2">
+                  <div className={`w-2 h-2 rounded-full shrink-0 ${r.color.includes("violet") ? "bg-violet-400" : r.color.includes("blue") ? "bg-blue-400" : r.color.includes("amber") ? "bg-amber-400" : r.color.includes("emerald") ? "bg-emerald-400" : "bg-orange-400"}`} />
+                  <span className="text-xs text-slate-400">{r.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div className="text-xs text-slate-600 uppercase tracking-wider font-medium">In partnership with</div>
+          <div className="flex items-center gap-3">
+            <div className="bg-white rounded-xl overflow-hidden" style={{ width: 52, height: 52 }}>
+              <img
+                src={`${BASE}images/riskinteg-brochure.jpg`}
+                alt="RiskInteg"
+                style={{ width: 52, height: 52, objectFit: "contain" }}
+              />
+            </div>
+            <div>
+              <div className="text-sm font-semibold text-white">RiskInteg Solution Services</div>
+              <div className="text-xs text-slate-500">info@riskinteg.co.bw</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Right content panel ── */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto">
+        <div className="w-full max-w-lg h-full flex flex-col justify-center py-8">
+          {view === "landing" && (
+            <LandingView
+              onCompanyLogin={() => setView("company")}
+              onDemo={() => setView("demo")}
+            />
+          )}
+          {view === "company" && <CompanySignIn onBack={() => setView("landing")} />}
+          {view === "demo" && <DemoPicker onBack={() => setView("landing")} />}
+        </div>
       </div>
     </div>
   );

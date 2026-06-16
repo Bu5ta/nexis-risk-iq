@@ -646,7 +646,12 @@ export default function Register() {
     window.location.href = `/api/tenants/${currentTenant}/controls/export`;
   };
 
-  const canEdit = currentRole === "Super Admin" || currentRole === "Tenant Admin" || currentRole === "Risk Manager";
+  const canEdit = [
+    "Manager - Risk and Compliance",
+    "Risk Champion",
+    "Director / Head of Department",
+    "Risk Owner",
+  ].includes(currentRole || "");
 
   return (
     <div className="space-y-6">

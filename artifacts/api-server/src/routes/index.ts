@@ -4,9 +4,11 @@ import tenantsRouter from "./tenants.js";
 import controlsRouter from "./controls.js";
 import auditRouter from "./audit.js";
 import aiRouter from "./ai.js";
+import authRouter from "./auth.js";
 
 const router: IRouter = Router();
 
+router.use(authRouter);
 router.use(healthRouter);
 router.use(tenantsRouter);
 router.use(controlsRouter);

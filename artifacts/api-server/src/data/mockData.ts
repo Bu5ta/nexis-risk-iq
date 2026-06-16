@@ -633,23 +633,24 @@ export const activityFeed: ActivityEntry[] = [
 
 export const users: User[] = [
   // GOV
-  { id: "usr-gov-001", tenantId: "ten-gov", name: "Commissioner James Turay", email: "j.turay@nra.gov.sl", role: "Tenant Admin", department: "Executive Office", avatar: null, lastActive: "2025-06-16T08:30:00Z" },
-  { id: "usr-gov-002", tenantId: "ten-gov", name: "Director Adama Kanneh", email: "a.kanneh@nra.gov.sl", role: "Risk Manager", department: "Risk & Internal Audit", avatar: null, lastActive: "2025-06-16T09:15:00Z" },
-  { id: "usr-gov-003", tenantId: "ten-gov", name: "Director Mohamed Bangura", email: "m.bangura@nra.gov.sl", role: "Department Owner", department: "Finance & Procurement", avatar: null, lastActive: "2025-06-15T16:45:00Z" },
-  { id: "usr-gov-004", tenantId: "ten-gov", name: "Director Fatima Koroma", email: "f.koroma@nra.gov.sl", role: "Department Owner", department: "Human Capital & Administration", avatar: null, lastActive: "2025-06-14T11:00:00Z" },
-  { id: "usr-gov-005", tenantId: "ten-gov", name: "CISO Lansana Kamara", email: "l.kamara@nra.gov.sl", role: "Risk Manager", department: "Digital Transformation", avatar: null, lastActive: "2025-06-16T07:50:00Z" },
+  // GOV
+  { id: "usr-gov-001", tenantId: "ten-gov", name: "Commissioner James Turay", email: "j.turay@nra.gov.bw", role: "Executive Management", department: "Executive Office", avatar: null, lastActive: "2025-06-16T08:30:00Z" },
+  { id: "usr-gov-002", tenantId: "ten-gov", name: "Director Adama Kanneh", email: "a.kanneh@nra.gov.bw", role: "Manager - Risk and Compliance", department: "Risk & Internal Audit", avatar: null, lastActive: "2025-06-16T09:15:00Z" },
+  { id: "usr-gov-003", tenantId: "ten-gov", name: "Director Mohamed Bangura", email: "m.bangura@nra.gov.bw", role: "Director / Head of Department", department: "Finance & Procurement", avatar: null, lastActive: "2025-06-15T16:45:00Z" },
+  { id: "usr-gov-004", tenantId: "ten-gov", name: "Director Fatima Koroma", email: "f.koroma@nra.gov.bw", role: "Director / Head of Department", department: "Human Capital & Administration", avatar: null, lastActive: "2025-06-14T11:00:00Z" },
+  { id: "usr-gov-005", tenantId: "ten-gov", name: "Lansana Kamara", email: "l.kamara@nra.gov.bw", role: "Risk Champion", department: "Digital Transformation", avatar: null, lastActive: "2025-06-16T07:50:00Z" },
   // PARA
-  { id: "usr-para-001", tenantId: "ten-para", name: "CEO Patricia Asante", email: "p.asante@meridianpower.com", role: "Tenant Admin", department: "Executive Office", avatar: null, lastActive: "2025-06-16T08:00:00Z" },
-  { id: "usr-para-002", tenantId: "ten-para", name: "Director Yaw Adjei", email: "y.adjei@meridianpower.com", role: "Risk Manager", department: "Corporate Governance", avatar: null, lastActive: "2025-06-16T09:30:00Z" },
-  { id: "usr-para-003", tenantId: "ten-para", name: "Eng. David Mensah", email: "d.mensah@meridianpower.com", role: "Department Owner", department: "Generation & Operations", avatar: null, lastActive: "2025-06-16T06:15:00Z" },
-  { id: "usr-para-004", tenantId: "ten-para", name: "Director Efua Donkoh", email: "e.donkoh@meridianpower.com", role: "Department Owner", department: "HSE & Environment", avatar: null, lastActive: "2025-06-15T17:30:00Z" },
-  { id: "usr-para-005", tenantId: "ten-para", name: "Frederick Amponsah", email: "f.amponsah@meridianpower.com", role: "Risk Manager", department: "ICT & Digital Infrastructure", avatar: null, lastActive: "2025-06-16T08:45:00Z" },
+  { id: "usr-para-001", tenantId: "ten-para", name: "CEO Patricia Asante", email: "p.asante@meridianpower.co.bw", role: "Executive Management", department: "Executive Office", avatar: null, lastActive: "2025-06-16T08:00:00Z" },
+  { id: "usr-para-002", tenantId: "ten-para", name: "Director Yaw Adjei", email: "y.adjei@meridianpower.co.bw", role: "Manager - Risk and Compliance", department: "Corporate Governance", avatar: null, lastActive: "2025-06-16T09:30:00Z" },
+  { id: "usr-para-003", tenantId: "ten-para", name: "Eng. David Mensah", email: "d.mensah@meridianpower.co.bw", role: "Director / Head of Department", department: "Generation & Operations", avatar: null, lastActive: "2025-06-16T06:15:00Z" },
+  { id: "usr-para-004", tenantId: "ten-para", name: "Director Efua Donkoh", email: "e.donkoh@meridianpower.co.bw", role: "Risk Owner", department: "HSE & Environment", avatar: null, lastActive: "2025-06-15T17:30:00Z" },
+  { id: "usr-para-005", tenantId: "ten-para", name: "Frederick Amponsah", email: "f.amponsah@meridianpower.co.bw", role: "Risk Champion", department: "ICT & Digital Infrastructure", avatar: null, lastActive: "2025-06-16T08:45:00Z" },
   // PRIV
-  { id: "usr-priv-001", tenantId: "ten-priv", name: "Group CEO Chidi Okonkwo", email: "c.okonkwo@apexfinancial.com", role: "Executive Viewer", department: "Group Executive", avatar: null, lastActive: "2025-06-16T07:00:00Z" },
-  { id: "usr-priv-002", tenantId: "ten-priv", name: "Director Emeka Nwosu", email: "e.nwosu@apexfinancial.com", role: "Risk Manager", department: "Risk Management", avatar: null, lastActive: "2025-06-16T09:00:00Z" },
-  { id: "usr-priv-003", tenantId: "ten-priv", name: "MLRO Christine Abara", email: "c.abara@apexfinancial.com", role: "Department Owner", department: "Compliance & Regulatory", avatar: null, lastActive: "2025-06-16T08:30:00Z" },
-  { id: "usr-priv-004", tenantId: "ten-priv", name: "CISO Tunde Adebayo", email: "t.adebayo@apexfinancial.com", role: "Department Owner", department: "Information Technology", avatar: null, lastActive: "2025-06-16T07:45:00Z" },
-  { id: "usr-priv-005", tenantId: "ten-priv", name: "Director Nkechi Osuji", email: "n.osuji@apexfinancial.com", role: "Risk Manager", department: "Internal Audit", avatar: null, lastActive: "2025-06-15T16:00:00Z" },
+  { id: "usr-priv-001", tenantId: "ten-priv", name: "Group CEO Chidi Okonkwo", email: "c.okonkwo@apexfinancial.co.bw", role: "Executive Management", department: "Group Executive", avatar: null, lastActive: "2025-06-16T07:00:00Z" },
+  { id: "usr-priv-002", tenantId: "ten-priv", name: "Director Emeka Nwosu", email: "e.nwosu@apexfinancial.co.bw", role: "Manager - Risk and Compliance", department: "Risk Management", avatar: null, lastActive: "2025-06-16T09:00:00Z" },
+  { id: "usr-priv-003", tenantId: "ten-priv", name: "Christine Abara", email: "c.abara@apexfinancial.co.bw", role: "Risk Champion", department: "Compliance & Regulatory", avatar: null, lastActive: "2025-06-16T08:30:00Z" },
+  { id: "usr-priv-004", tenantId: "ten-priv", name: "Tunde Adebayo", email: "t.adebayo@apexfinancial.co.bw", role: "Risk Owner", department: "Information Technology", avatar: null, lastActive: "2025-06-16T07:45:00Z" },
+  { id: "usr-priv-005", tenantId: "ten-priv", name: "Director Nkechi Osuji", email: "n.osuji@apexfinancial.co.bw", role: "Director / Head of Department", department: "Internal Audit", avatar: null, lastActive: "2025-06-15T16:00:00Z" },
 ];
 
 // ─── REPORTS ──────────────────────────────────────────────────────────────────

@@ -1,3 +1,5 @@
+import bcrypt from "bcryptjs";
+import { sql } from "drizzle-orm";
 import { db } from "@workspace/db";
 import {
   tenants as tenantsTable,
@@ -23,6 +25,34 @@ import {
 } from "./mockData.js";
 import { logger } from "../lib/logger.js";
 
+export async function applyMigrations(): Promise<void> {
+  try {
+    await db.execute(sql`ALTER TABLE tenants ADD COLUMN IF NOT EXISTS is_demo boolean NOT NULL DEFAULT false`);
+    await db.execute(sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS password_hash text`);
+
+    try {
+      await db.execute(sql`ALTER TABLE users ALTER COLUMN role TYPE text USING role::text`);
+      await db.execute(sql`DROP TYPE IF EXISTS user_role CASCADE`);
+    } catch {
+      // Already text — ignore
+    }
+
+    await db.execute(sql`UPDATE tenants SET is_demo = true WHERE id IN ('ten-gov','ten-para','ten-priv') AND is_demo = false`);
+
+    await db.execute(sql`UPDATE users SET role = 'Manager - Risk and Compliance' WHERE role IN ('Super Admin','Tenant Admin','Risk Manager')`);
+    await db.execute(sql`UPDATE users SET role = 'Director / Head of Department' WHERE role = 'Department Owner'`);
+    await db.execute(sql`UPDATE users SET role = 'Executive Management' WHERE role = 'Executive Viewer'`);
+
+    const demoHash = await bcrypt.hash("demo123", 10);
+    await db.execute(sql`UPDATE users SET password_hash = ${demoHash} WHERE password_hash IS NULL`);
+
+    logger.info("Schema migrations applied");
+  } catch (err) {
+    logger.error({ err }, "Migration error");
+    throw err;
+  }
+}
+
 export async function seedIfEmpty(): Promise<void> {
   try {
     const existing = await db.select().from(tenantsTable).limit(1);
@@ -33,7 +63,8 @@ export async function seedIfEmpty(): Promise<void> {
 
     logger.info("Seeding database from mock data…");
 
-    // Tenants
+    const demoHash = await bcrypt.hash("demo123", 10);
+
     await db.insert(tenantsTable).values(
       tenantsData.map(t => ({
         id: t.id,
@@ -44,10 +75,10 @@ export async function seedIfEmpty(): Promise<void> {
         description: t.description,
         totalUsers: t.totalUsers,
         totalDepartments: t.totalDepartments,
+        isDemo: true,
       }))
     ).onConflictDoNothing();
 
-    // Departments
     await db.insert(departmentsTable).values(
       departmentsData.map(d => ({
         id: d.id,
@@ -64,7 +95,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Controls
     await db.insert(controlsTable).values(
       controlsData.map(c => ({
         id: c.id,
@@ -90,7 +120,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Notes
     await db.insert(notesTable).values(
       notesData.map(n => ({
         id: n.id,
@@ -101,7 +130,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Timeline
     await db.insert(timelineTable).values(
       timelinesData.map(t => ({
         id: t.id,
@@ -114,7 +142,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Audit log
     await db.insert(auditLogTable).values(
       auditLogData.map(a => ({
         id: a.id,
@@ -130,7 +157,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Activity feed
     await db.insert(activityFeedTable).values(
       activityFeedData.map(a => ({
         id: a.id,
@@ -146,7 +172,6 @@ export async function seedIfEmpty(): Promise<void> {
       }))
     ).onConflictDoNothing();
 
-    // Users
     await db.insert(usersTable).values(
       usersData.map(u => ({
         id: u.id,
@@ -157,10 +182,10 @@ export async function seedIfEmpty(): Promise<void> {
         department: u.department,
         avatar: u.avatar,
         lastActive: u.lastActive,
+        passwordHash: demoHash,
       }))
     ).onConflictDoNothing();
 
-    // Reports
     await db.insert(reportsTable).values(
       reportsData.map(r => ({
         id: r.id,

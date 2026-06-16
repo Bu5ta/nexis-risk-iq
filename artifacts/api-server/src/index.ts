@@ -1,6 +1,6 @@
 import app from "./app";
 import { logger } from "./lib/logger";
-import { seedIfEmpty } from "./data/seed.js";
+import { seedIfEmpty, applyMigrations } from "./data/seed.js";
 
 const rawPort = process.env["PORT"];
 
@@ -16,15 +16,18 @@ if (Number.isNaN(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-seedIfEmpty().then(() => {
-  app.listen(port, (err) => {
-    if (err) {
-      logger.error({ err }, "Error listening on port");
-      process.exit(1);
-    }
-    logger.info({ port }, "Server listening");
+applyMigrations()
+  .then(() => seedIfEmpty())
+  .then(() => {
+    app.listen(port, (err) => {
+      if (err) {
+        logger.error({ err }, "Error listening on port");
+        process.exit(1);
+      }
+      logger.info({ port }, "Server listening");
+    });
+  })
+  .catch(err => {
+    logger.error({ err }, "Failed to initialise database — aborting startup");
+    process.exit(1);
   });
-}).catch(err => {
-  logger.error({ err }, "Failed to seed database — aborting startup");
-  process.exit(1);
-});

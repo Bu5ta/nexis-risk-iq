@@ -43,7 +43,7 @@ const navItems = [
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
-  const { currentTenant, currentRole, setTenant, setRole } = useTenant();
+  const { currentTenant, currentRole, currentUser, isDemoMode, logout, setTenant } = useTenant();
   const { theme, setTheme } = useTheme();
   
   const { data: tenants } = useListTenants();
@@ -173,23 +173,29 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="h-9 gap-2 pl-2">
                     <Avatar className="h-6 w-6">
-                      <AvatarFallback className="bg-primary/10 text-primary text-xs">U</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                        {currentUser
+                          ? currentUser.name.split(" ").map(p => p[0]).slice(0, 2).join("")
+                          : "D"}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col items-start text-left">
-                      <span className="text-sm font-medium leading-none">Demo User</span>
+                      <span className="text-sm font-medium leading-none">
+                        {currentUser ? currentUser.name.split(" ").slice(0, 2).join(" ") : "Demo User"}
+                        {isDemoMode && <span className="ml-1.5 text-[9px] font-normal bg-amber-500/20 text-amber-400 px-1 py-0.5 rounded">DEMO</span>}
+                      </span>
                       <span className="text-[10px] text-muted-foreground leading-none mt-1">{currentRole}</span>
                     </div>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                  <DropdownMenuLabel>
+                    {currentUser ? currentUser.name : "Demo Session"}
+                    {currentUser && <div className="text-xs font-normal text-muted-foreground">{currentUser.email}</div>}
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => {
-                    setTenant("");
-                    setRole("");
-                    setLocation("/login");
-                  }}>
-                    <LogOut className="mr-2 h-4 w-4" /> Log out
+                  <DropdownMenuItem onClick={() => { logout(); setLocation("/login"); }}>
+                    <LogOut className="mr-2 h-4 w-4" /> {isDemoMode ? "Exit Demo" : "Log out"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
