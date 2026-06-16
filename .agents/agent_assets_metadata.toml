@@ -42,3 +42,9 @@ id = "J_owTNJICAI1zHTS9SwP9"
 uri = "file://artifacts/nexis-demo-video/public/audio/vo_outro.mp3"
 type = "audio"
 title = "outro voiceover"
+
+[[outputs]]
+id = "WJ-6s8I55r3I36uSHBd5Z"
+uri = "file://.local/outputs/Asset-Manager.pdf"
+type = "pdf"
+title = "Asset Manager.pdf"
