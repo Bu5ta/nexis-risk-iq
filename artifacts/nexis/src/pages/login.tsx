@@ -47,13 +47,14 @@ export default function Login() {
           {/* Partnership strip */}
           <div className="flex items-center justify-center gap-3 pt-2">
             <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">In Partnership With</span>
-            <div className="bg-white rounded-lg overflow-hidden shadow-sm" style={{ width: 160, height: 44 }}>
+            <div className="bg-white rounded-lg overflow-hidden shadow-sm flex items-center justify-center" style={{ width: 44, height: 44 }}>
               <img
                 src={`${BASE}images/riskinteg-brochure.jpg`}
                 alt="RiskInteg Solution Services"
-                style={{ width: 370, height: 'auto', marginTop: -6, marginLeft: -6 }}
+                style={{ width: 44, height: 44, objectFit: 'contain' }}
               />
             </div>
+            <span className="text-sm font-semibold text-foreground">RiskInteg Solution Services</span>
           </div>
         </div>
 

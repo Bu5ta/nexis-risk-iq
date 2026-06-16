@@ -64,21 +64,65 @@ export default function VideoTemplate({
   const sceneIndex = Object.keys(SCENE_DURATIONS).indexOf(baseSceneKey);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const playPromiseRef = useRef<Promise<void> | null>(null);
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
   }, [currentSceneKey, onSceneChange]);
 
+  // Handle scene changes: seek to the right position and play
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
     audio.volume = 0.45;
+
     const targetTime = SCENE_START_SEC[baseSceneKey] ?? 0;
-    if (Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC) {
-      audio.currentTime = targetTime;
+    const needsSeek = Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC;
+
+    const doPlay = () => {
+      if (audio.muted) return;
+      const p = audio.play();
+      playPromiseRef.current = p;
+      p?.catch(() => {});
+    };
+
+    if (needsSeek) {
+      // Pause before seeking to avoid double-audio overlap
+      const pending = playPromiseRef.current;
+      if (pending) {
+        pending.then(() => {
+          audio.pause();
+          audio.currentTime = targetTime;
+          doPlay();
+        }).catch(() => {
+          audio.currentTime = targetTime;
+          doPlay();
+        });
+      } else {
+        audio.pause();
+        audio.currentTime = targetTime;
+        doPlay();
+      }
+    } else {
+      if (!audio.paused && !audio.muted) return;
+      doPlay();
     }
-    audio.play().catch(() => {});
-  }, [currentSceneKey, baseSceneKey, muted]);
+  }, [currentSceneKey, baseSceneKey]);
+
+  // Handle muted toggle independently — no seek, just pause/resume
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    audio.muted = muted;
+    if (muted) {
+      audio.pause();
+    } else {
+      const p = audio.play();
+      playPromiseRef.current = p;
+      p?.catch(() => {});
+    }
+  }, [muted]);
 
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
@@ -147,12 +191,11 @@ export default function VideoTemplate({
         {SceneComponent && <SceneComponent key={currentSceneKey} />}
       </AnimatePresence>
 
-      {/* Background music — scene-synced */}
+      {/* Background music — single persistent audio element, no autoPlay */}
       <audio
         ref={audioRef}
         src={`${import.meta.env.BASE_URL}audio/composite_audio.mp3`}
         preload="auto"
-        autoPlay
         muted={muted}
       />
     </div>

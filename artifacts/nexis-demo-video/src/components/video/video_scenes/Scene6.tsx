@@ -39,35 +39,37 @@ export function Scene6() {
         </h1>
       </motion.div>
 
-      {/* Partnership Lockup */}
+      {/* Strategic Partnership Lockup */}
       <motion.div
-        className="flex items-center gap-5 mb-10"
+        className="flex flex-col items-center gap-3 mb-10"
         initial={{ opacity: 0, y: 10 }}
         animate={phase >= 2 ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
         transition={{ duration: 0.7, ease: 'easeOut' }}
       >
-        <span className="text-sm text-white/40 tracking-widest uppercase font-mono">
-          In Partnership With
+        <span className="text-xs text-white/40 tracking-widest uppercase font-mono">
+          Strategic Partnership
         </span>
 
-        {/* Thin divider */}
-        <div className="w-px h-8 bg-white/20" />
+        {/* Partnership card */}
+        <div className="flex items-center gap-5 bg-white/5 rounded-2xl px-6 py-4 border border-white/10">
+          {/* RiskInteg logo — clean square */}
+          <div
+            className="bg-white rounded-xl overflow-hidden shadow-[0_0_24px_rgba(255,255,255,0.12)] flex items-center justify-center flex-shrink-0"
+            style={{ width: 72, height: 72 }}
+          >
+            <img
+              src={`${BASE}images/riskinteg-logo.jpg`}
+              alt="RiskInteg Solution Services"
+              style={{ width: 72, height: 72, objectFit: 'contain' }}
+            />
+          </div>
 
-        {/* RiskInteg logo — cropped from brochure on white card */}
-        <div
-          className="bg-white rounded-xl overflow-hidden shadow-[0_0_24px_rgba(255,255,255,0.12)]"
-          style={{ width: 220, height: 62 }}
-        >
-          <img
-            src={`${BASE}images/riskinteg-brochure.jpg`}
-            alt="RiskInteg Solution Services"
-            style={{
-              width: 500,
-              height: 'auto',
-              marginTop: -9,
-              marginLeft: -9,
-            }}
-          />
+          <div className="w-px h-10 bg-white/20" />
+
+          <div className="flex flex-col">
+            <span className="text-lg font-bold text-white">RiskInteg Solution Services</span>
+            <span className="text-sm text-white/50 font-mono">Exclusive go-to-market partner for NEXIS Risk-IQ</span>
+          </div>
         </div>
       </motion.div>
 
@@ -78,7 +80,7 @@ export function Scene6() {
         animate={phase >= 3 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.8, ease: 'easeOut' }}
       >
-        Trusted by Government, Parastatal &amp; Private Sector organizations worldwide.
+        Trusted by Government, Parastatal &amp; Private Sector organisations worldwide.
       </motion.p>
 
       {/* Demo CTA */}

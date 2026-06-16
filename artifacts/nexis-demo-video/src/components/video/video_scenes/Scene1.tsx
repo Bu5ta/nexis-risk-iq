@@ -79,27 +79,30 @@ export function Scene1() {
         </motion.p>
       </motion.div>
 
-      {/* Partnership strip */}
+      {/* Strategic Partnership strip */}
       <motion.div
-        className="flex items-center gap-4"
+        className="flex flex-col items-center gap-3"
         initial={{ opacity: 0, y: 12 }}
         animate={phase >= 5 ? { opacity: 1, y: 0 } : { opacity: 0, y: 12 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <span className="text-sm text-white/40 tracking-widest uppercase font-mono">In Partnership With</span>
-        {/* RiskInteg logo card */}
-        <div className="bg-white rounded-lg overflow-hidden shadow-lg"
-          style={{ width: 200, height: 56 }}>
-          <img
-            src={`${BASE}images/riskinteg-brochure.jpg`}
-            alt="RiskInteg Solution Services"
-            style={{
-              width: 460,
-              height: 'auto',
-              marginTop: -8,
-              marginLeft: -8,
-            }}
-          />
+        <span className="text-xs text-white/40 tracking-widest uppercase font-mono">Strategic Partnership</span>
+        <div className="flex items-center gap-4">
+          {/* RiskInteg logo — clean square display */}
+          <div
+            className="bg-white rounded-xl overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.15)] flex items-center justify-center"
+            style={{ width: 80, height: 80 }}
+          >
+            <img
+              src={`${BASE}images/riskinteg-logo.jpg`}
+              alt="RiskInteg Solution Services"
+              style={{ width: 80, height: 80, objectFit: 'contain' }}
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-base font-bold text-white tracking-wide">RiskInteg Solution Services</span>
+            <span className="text-sm text-white/50 font-mono">Delivering NEXIS Risk-IQ to the market</span>
+          </div>
         </div>
       </motion.div>
     </motion.div>

@@ -103,12 +103,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <p className="text-[9px] uppercase tracking-widest text-muted-foreground mb-2 text-center font-medium">
               In Partnership With
             </p>
-            <div className="bg-white rounded-md overflow-hidden mx-auto" style={{ width: 132, height: 36 }}>
-              <img
-                src={`${BASE}images/riskinteg-brochure.jpg`}
-                alt="RiskInteg Solution Services"
-                style={{ width: 305, height: 'auto', marginTop: -5, marginLeft: -5 }}
-              />
+            <div className="flex items-center justify-center gap-2">
+              <div className="bg-white rounded-md overflow-hidden flex items-center justify-center flex-shrink-0" style={{ width: 32, height: 32 }}>
+                <img
+                  src={`${BASE}images/riskinteg-brochure.jpg`}
+                  alt="RiskInteg Solution Services"
+                  style={{ width: 32, height: 32, objectFit: 'contain' }}
+                />
+              </div>
+              <span className="text-[10px] font-semibold text-sidebar-foreground leading-tight">RiskInteg<br/>Solution Services</span>
             </div>
           </div>
         </Sidebar>
