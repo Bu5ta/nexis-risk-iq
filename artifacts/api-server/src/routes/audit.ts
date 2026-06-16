@@ -1,30 +1,32 @@
 import { Router } from "express";
-import { mutableAuditLog } from "../data/mockData.js";
+import { db } from "@workspace/db";
+import { auditLog } from "@workspace/db";
+import { eq, and, ilike, desc } from "drizzle-orm";
 
 const router = Router();
 
 // GET /api/audit-log
-router.get("/audit-log", (req, res) => {
+router.get("/audit-log", async (req, res) => {
   const { tenantId, actor, action, page } = req.query as Record<string, string>;
 
   if (!tenantId) return res.status(400).json({ error: "tenantId is required" });
 
-  let entries = mutableAuditLog.filter(e => e.tenantId === tenantId);
-
-  if (actor) {
-    const q = actor.toLowerCase();
-    entries = entries.filter(e => e.actor.toLowerCase().includes(q));
-  }
-
-  if (action) {
-    const q = action.toLowerCase();
-    entries = entries.filter(e => e.action.toLowerCase().includes(q));
-  }
+  const allEntries = await db
+    .select()
+    .from(auditLog)
+    .where(
+      and(
+        eq(auditLog.tenantId, tenantId),
+        actor ? ilike(auditLog.actor, `%${actor}%`) : undefined,
+        action ? ilike(auditLog.action, `%${action}%`) : undefined
+      )
+    )
+    .orderBy(desc(auditLog.timestamp));
 
   const pageSize = 20;
   const pageNum = Math.max(1, parseInt(page || "1", 10));
-  const total = entries.length;
-  const paged = entries.slice((pageNum - 1) * pageSize, pageNum * pageSize);
+  const total = allEntries.length;
+  const paged = allEntries.slice((pageNum - 1) * pageSize, pageNum * pageSize);
 
   res.json({ entries: paged, total, page: pageNum, pageSize });
 });

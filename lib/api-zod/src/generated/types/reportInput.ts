@@ -5,10 +5,12 @@
  * NEXIS Risk-IQ API
  * OpenAPI spec version: 0.1.0
  */
-import type { ReportSectionData } from './reportSectionData';
 
-export interface ReportSection {
+export interface ReportInput {
   title: string;
-  content: string;
-  data?: ReportSectionData;
+  type: string;
+  description?: string;
+  period?: string;
+  actor?: string;
+  actorRole?: string;
 }

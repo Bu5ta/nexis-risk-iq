@@ -6,9 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 
-export type ListAuditLogParams = {
-tenantId: string;
-actor?: string;
-action?: string;
-page?: number;
+export type ImportControlsResultErrorsItem = {
+  row: number;
+  error: string;
 };

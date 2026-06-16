@@ -108,6 +108,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Department"
+    post:
+      operationId: createDepartment
+      tags: [departments]
+      summary: Create a new department
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentInput"
+      responses:
+        "201":
+          description: Created department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
 
   /tenants/{tenantId}/departments/{departmentId}:
     get:
@@ -132,6 +155,34 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/DepartmentDetail"
+    put:
+      operationId: updateDepartment
+      tags: [departments]
+      summary: Update a department
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: departmentId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DepartmentInput"
+      responses:
+        "200":
+          description: Updated department
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Department"
 
   /controls:
     get:
@@ -173,6 +224,23 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Control"
+    post:
+      operationId: createControl
+      tags: [controls]
+      summary: Create a new control
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ControlInput"
+      responses:
+        "201":
+          description: Created control
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Control"
 
   /controls/{controlId}:
     get:
@@ -195,7 +263,7 @@ paths:
     patch:
       operationId: updateControl
       tags: [controls]
-      summary: Update a control
+      summary: Perform a named action on a control
       parameters:
         - name: controlId
           in: path
@@ -215,6 +283,50 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Control"
+    put:
+      operationId: updateControlFields
+      tags: [controls]
+      summary: Update control field values
+      parameters:
+        - name: controlId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ControlFieldUpdate"
+      responses:
+        "200":
+          description: Updated control
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Control"
+    delete:
+      operationId: deleteControl
+      tags: [controls]
+      summary: Delete a control
+      parameters:
+        - name: controlId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                required: [success]
 
   /controls/{controlId}/notes:
     post:
@@ -297,6 +409,51 @@ paths:
               schema:
                 $ref: "#/components/schemas/AuditLogPage"
 
+  /tenants/{tenantId}/controls/import:
+    post:
+      operationId: importControls
+      tags: [controls]
+      summary: Bulk import controls from client-parsed CSV/Excel
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportControlsInput"
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportControlsResult"
+
+  /tenants/{tenantId}/controls/export:
+    get:
+      operationId: exportControls
+      tags: [controls]
+      summary: Export controls as CSV
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: CSV file
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+
   /tenants/{tenantId}/reports:
     get:
       operationId: listReports
@@ -317,6 +474,29 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Report"
+    post:
+      operationId: generateReport
+      tags: [reports]
+      summary: Generate a new report
+      parameters:
+        - name: tenantId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReportInput"
+      responses:
+        "201":
+          description: Generated report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReportDetail"
 
   /tenants/{tenantId}/reports/{reportId}:
     get:
@@ -986,3 +1166,162 @@ components:
         - timestamp
         - result
         - severity
+
+    ControlInput:
+      type: object
+      required: [tenantId, departmentId, risk, control]
+      properties:
+        tenantId:
+          type: string
+        departmentId:
+          type: string
+        department:
+          type: string
+        risk:
+          type: string
+        riskId:
+          type: string
+        control:
+          type: string
+        controlOwner:
+          type: string
+        implementationDate:
+          type: string
+        residualRiskScore:
+          type: number
+        inherentRiskScore:
+          type: number
+        withinAppetite:
+          type: boolean
+        overallRiskLevel:
+          type: string
+          enum: [High, Medium, Low]
+        implementationStatus:
+          type: string
+          enum: [Implemented, In Progress, Overdue, Draft, Awaiting Review, Escalated]
+        riskDescription:
+          type: string
+        controlDescription:
+          type: string
+        actor:
+          type: string
+        actorRole:
+          type: string
+
+    ControlFieldUpdate:
+      type: object
+      properties:
+        risk:
+          type: string
+        control:
+          type: string
+        controlOwner:
+          type: string
+        implementationDate:
+          type: string
+        residualRiskScore:
+          type: number
+        inherentRiskScore:
+          type: number
+        withinAppetite:
+          type: boolean
+        overallRiskLevel:
+          type: string
+        implementationStatus:
+          type: string
+        riskDescription:
+          type: string
+        controlDescription:
+          type: string
+        actor:
+          type: string
+        actorRole:
+          type: string
+
+    ImportControlsInput:
+      type: object
+      required: [rows]
+      properties:
+        rows:
+          type: array
+          items:
+            type: object
+            required: [risk, control]
+            properties:
+              department:
+                type: string
+              risk:
+                type: string
+              control:
+                type: string
+              controlOwner:
+                type: string
+              implementationDate:
+                type: string
+              overallRiskLevel:
+                type: string
+              implementationStatus:
+                type: string
+              withinAppetite:
+                type: string
+              residualRiskScore:
+                type: number
+              inherentRiskScore:
+                type: number
+              riskDescription:
+                type: string
+              controlDescription:
+                type: string
+        actor:
+          type: string
+        actorRole:
+          type: string
+
+    ImportControlsResult:
+      type: object
+      required: [inserted, errors]
+      properties:
+        inserted:
+          type: integer
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              row:
+                type: integer
+              error:
+                type: string
+            required: [row, error]
+
+    DepartmentInput:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+        head:
+          type: string
+        description:
+          type: string
+        actor:
+          type: string
+        actorRole:
+          type: string
+
+    ReportInput:
+      type: object
+      required: [title, type]
+      properties:
+        title:
+          type: string
+        type:
+          type: string
+        description:
+          type: string
+        period:
+          type: string
+        actor:
+          type: string
+        actorRole:
+          type: string
