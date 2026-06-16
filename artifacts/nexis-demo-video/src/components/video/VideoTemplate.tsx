@@ -9,43 +9,56 @@ import { Scene5 } from './video_scenes/Scene5';
 import { Scene6 } from './video_scenes/Scene6';
 
 export const SCENE_DURATIONS: Record<string, number> = {
-  intro: 3500,
-  problem: 3500,
-  dashboard: 5000,
-  register: 5000,
+  intro:      3500,
+  problem:    3500,
+  dashboard:  5000,
+  register:   5000,
   governance: 4000,
-  outro: 4000,
+  outro:      4000,
 };
 
 const SCENE_COMPONENTS: Record<string, React.ComponentType> = {
-  intro: Scene1,
-  problem: Scene2,
-  dashboard: Scene3,
-  register: Scene4,
+  intro:      Scene1,
+  problem:    Scene2,
+  dashboard:  Scene3,
+  register:   Scene4,
   governance: Scene5,
-  outro: Scene6,
+  outro:      Scene6,
 };
 
-const SCENE_START_SEC: Record<string, number> = (() => {
-  const out: Record<string, number> = {};
-  let cumulativeMs = 0;
-  for (const [key, ms] of Object.entries(SCENE_DURATIONS)) {
-    out[key] = cumulativeMs / 1000;
-    cumulativeMs += ms;
-  }
-  return out;
-})();
+// Per-scene voice-over files — played from zero on each scene, no seeking
+const SCENE_VO: Record<string, string> = {
+  intro:      'audio/vo_intro.mp3',
+  problem:    'audio/vo_problem.mp3',
+  dashboard:  'audio/vo_dashboard.mp3',
+  register:   'audio/vo_register.mp3',
+  governance: 'audio/vo_governance.mp3',
+  outro:      'audio/vo_outro.mp3',
+};
 
 const gridPositions = [
-  { x: '0%', y: '0%', scale: 1, opacity: 0.1 },
+  { x: '0%',   y: '0%',   scale: 1,   opacity: 0.1  },
   { x: '-10%', y: '-10%', scale: 1.2, opacity: 0.15 },
-  { x: '10%', y: '-5%', scale: 1.1, opacity: 0.05 },
-  { x: '-5%', y: '10%', scale: 1.3, opacity: 0.1 },
-  { x: '0%', y: '5%', scale: 1, opacity: 0.2 },
-  { x: '0%', y: '0%', scale: 1, opacity: 0.05 },
+  { x: '10%',  y: '-5%',  scale: 1.1, opacity: 0.05 },
+  { x: '-5%',  y: '10%',  scale: 1.3, opacity: 0.1  },
+  { x: '0%',   y: '5%',   scale: 1,   opacity: 0.2  },
+  { x: '0%',   y: '0%',   scale: 1,   opacity: 0.05 },
 ];
 
-const AUDIO_SEEK_EPSILON_SEC = 0.18;
+function stopAudio(el: HTMLAudioElement | null) {
+  if (!el) return;
+  el.pause();
+  el.src = '';
+}
+
+function safePlay(el: HTMLAudioElement | null) {
+  if (!el) return;
+  el.play().catch((err: Error) => {
+    if (err.name !== 'AbortError') {
+      console.warn('Audio play error:', err.name, err.message);
+    }
+  });
+}
 
 export default function VideoTemplate({
   durations = SCENE_DURATIONS,
@@ -63,51 +76,77 @@ export default function VideoTemplate({
   const baseSceneKey = currentSceneKey.replace(/_r[12]$/, '') as keyof typeof SCENE_DURATIONS;
   const sceneIndex = Object.keys(SCENE_DURATIONS).indexOf(baseSceneKey);
 
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const BASE = import.meta.env.BASE_URL;
 
+  // Two separate audio elements: BG music (looping) + scene VO (resets on each scene)
+  const bgRef  = useRef<HTMLAudioElement | null>(null);
+  const voRef  = useRef<HTMLAudioElement | null>(null);
+
+  // Notify parent of scene changes
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
   }, [currentSceneKey, onSceneChange]);
 
-  // Stop audio on unmount — critical when key={mountKey} causes a remount,
-  // otherwise the old audio element keeps playing in the browser after removal.
+  // Hard-stop both tracks on unmount (handles key={mountKey} remounts)
   useEffect(() => {
     return () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.pause();
-        audio.src = '';
-      }
+      stopAudio(bgRef.current);
+      stopAudio(voRef.current);
     };
   }, []);
 
-  // Single unified audio effect — always pause() synchronously first.
-  // The browser safely rejects any in-flight play promise with AbortError,
-  // so no async cascade can cause overlapping playback.
+  // BG music: start once on mount, keep looping, respect muted state
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    audio.volume = 0.45;
-    audio.muted = muted;
-
-    // Always stop first — this kills any ongoing playback immediately
-    audio.pause();
-
-    const targetTime = SCENE_START_SEC[baseSceneKey] ?? 0;
-    if (Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC) {
-      audio.currentTime = targetTime;
-    }
-
+    const bg = bgRef.current;
+    if (!bg) return;
+    bg.volume = 0.12;
+    bg.loop   = true;
+    bg.muted  = muted;
     if (!muted) {
-      audio.play().catch((err: Error) => {
-        // AbortError = we paused before play resolved — harmless
-        if (err.name !== 'AbortError') {
-          console.warn('Audio play error:', err.name, err.message);
-        }
-      });
+      safePlay(bg);
+    } else {
+      bg.pause();
     }
-  }, [currentSceneKey, baseSceneKey, muted]);
+  }, [muted]);
+
+  // Scene VO: on every distinct base-scene change, stop old VO and start fresh
+  useEffect(() => {
+    const vo = voRef.current;
+    if (!vo) return;
+
+    // Kill whatever was playing immediately — no async chain
+    vo.pause();
+    vo.currentTime = 0;
+    vo.muted       = muted;
+    vo.volume      = 0.90;
+
+    const voFile = SCENE_VO[baseSceneKey];
+    if (!voFile || muted) return;
+
+    vo.src = `${BASE}${voFile}`;
+    vo.load();
+    safePlay(vo);
+
+    return () => {
+      // Stop VO when this scene's effect is superseded
+      vo.pause();
+      vo.src = '';
+    };
+  // Only fire when the actual scene changes, not on muted toggle
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseSceneKey, BASE]);
+
+  // Handle mute toggle for VO separately (don't restart the scene)
+  useEffect(() => {
+    const vo = voRef.current;
+    if (!vo) return;
+    vo.muted = muted;
+    if (muted) {
+      vo.pause();
+    } else if (vo.src && vo.paused) {
+      safePlay(vo);
+    }
+  }, [muted]);
 
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
@@ -163,9 +202,9 @@ export default function VideoTemplate({
       <motion.div
         className="absolute h-[1px] bg-gradient-to-r from-transparent via-accent to-transparent"
         animate={{
-          left: ['10%', '0%', '20%', '-10%', '15%', '0%'][sceneIndex],
-          top: ['60%', '40%', '80%', '30%', '70%', '50%'][sceneIndex],
-          width: ['30%', '100%', '60%', '120%', '40%', '0%'][sceneIndex],
+          left:    ['10%', '0%', '20%', '-10%', '15%', '0%'][sceneIndex],
+          top:     ['60%', '40%', '80%', '30%', '70%', '50%'][sceneIndex],
+          width:   ['30%', '100%', '60%', '120%', '40%', '0%'][sceneIndex],
           opacity: sceneIndex === 5 ? 0 : 0.3,
         }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
@@ -176,12 +215,17 @@ export default function VideoTemplate({
         {SceneComponent && <SceneComponent key={currentSceneKey} />}
       </AnimatePresence>
 
-      {/* Background music — single persistent audio element, no autoPlay */}
+      {/* BG ambient music — loops continuously at low volume */}
       <audio
-        ref={audioRef}
-        src={`${import.meta.env.BASE_URL}audio/composite_audio.mp3`}
+        ref={bgRef}
+        src={`${BASE}audio/bg_music.mp3`}
         preload="auto"
-        muted={muted}
+        loop
+      />
+      {/* Scene voice-over — src swapped imperatively on each scene change */}
+      <audio
+        ref={voRef}
+        preload="none"
       />
     </div>
   );
