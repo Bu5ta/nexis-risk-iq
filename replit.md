@@ -1,36 +1,51 @@
-# [Project name]
+# NEXIS Risk & Control Intelligence
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A production-grade multi-tenant SaaS executive dashboard for governance, risk, and compliance (GRC) management. Three demo tenants: National Revenue Authority (Government), Meridian Power & Utilities (Parastatal), Apex Financial Services Group (Private).
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 8080, proxied at `/api`)
+- `pnpm --filter @workspace/nexis run dev` — run the React frontend (port 18139, proxied at `/`)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
-- `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
 
 ## Stack
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
-- API: Express 5
-- DB: PostgreSQL + Drizzle ORM
-- Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
+- **Frontend:** React + Vite, Tailwind CSS, shadcn/ui, Recharts, Wouter routing, TanStack Query, next-themes, Sonner toasts, Framer Motion
+- **Backend:** Express 5, in-memory mock data (no DB — pure demo)
+- **API contract:** OpenAPI spec → Orval codegen (React Query hooks + Zod schemas)
 - Build: esbuild (CJS bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `lib/api-spec/openapi.yaml` — OpenAPI source of truth
+- `lib/api-client-react/src/generated/` — generated React Query hooks and schemas
+- `artifacts/api-server/src/data/mockData.ts` — all in-memory mock data (3 tenants, 30 departments, 20+ controls, audit log, reports, users)
+- `artifacts/api-server/src/routes/` — Express route handlers (tenants, controls, audit, health)
+- `artifacts/nexis/src/pages/` — all frontend pages (login, dashboard, register, departments, reports, audit, admin)
+- `artifacts/nexis/src/components/layout.tsx` — sidebar + header shell with tenant switcher and dark mode
+- `artifacts/nexis/src/lib/tenant-context.tsx` — TenantProvider (localStorage-backed auth state)
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- **No database** — all data is in-memory mock data in `mockData.ts`. No `DATABASE_URL` needed.
+- **Contract-first API** — OpenAPI spec drives codegen; frontend never calls fetch directly, always uses generated hooks.
+- **Multi-tenant via context** — tenant selection stored in localStorage; all API calls pass `tenantId` as a path or query param.
+- **QueryKey discipline** — all `useXxx()` hook calls must pass `queryKey: getXxxQueryKey(...)` explicitly in the query options (Orval v7 requirement).
+- **Dark mode default** — `ThemeProvider defaultTheme="dark"` with `storageKey="nexis-theme"`.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+Three-tenant GRC dashboard with:
+- **Login** — tenant and role picker (Super Admin / Risk Manager / Executive Viewer)
+- **Executive Dashboard** — KPI cards, risk-by-department bar chart, implementation trend line, risk level pie chart, recent activity feed
+- **Risk & Control Register** — searchable/filterable table of all controls; click-through drawer with details, timeline, notes, and action buttons (escalate, mark complete)
+- **Departments** — grid of department cards with compliance rate progress bars; detail page with accountability breakdown
+- **Reports** — pre-configured board packs; generate modal with formatted report preview
+- **Audit Trail** — filterable immutable log of all actions
+- **Admin** — user management table, tenant settings, notification preferences
 
 ## User preferences
 
@@ -38,7 +53,9 @@ _Populate as you build — explicit user instructions worth remembering across s
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Do NOT run `pnpm dev` at workspace root — use `restart_workflow` or individual filter commands.
+- After any route change in `api-server`, restart the API Server workflow so esbuild picks up the changes.
+- `getGetControlQueryKey` must be explicitly imported (not inferred) in `register.tsx` — TypeScript won't find it via re-export without explicit import.
 
 ## Pointers
 

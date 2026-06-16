@@ -1,0 +1,234 @@
+You are a senior full-stack engineer and product designer. Build a production-grade DEMO multi-tenant SaaS web application called “NEXIS Risk & Control Intelligence” using Next.js, TypeScript, Tailwind CSS, and a modern component library.
+
+The purpose of this demo is to present a professional, immersive, interactive executive dashboard to C-suite management, board members, and senior leadership. The app must look credible enough for government, parastatal, and private-sector adoption, but it is still a demo and should use realistic dummy data only.
+
+TECH STACK
+- Frontend: Next.js 14+ App Router, TypeScript, Tailwind CSS, shadcn/ui or equivalent premium UI components.
+- Backend: Neon PostgreSQL with Prisma ORM.
+- Authentication: demo-ready auth scaffolding with role-based access control, but for the demo you may use seeded login roles and a lightweight mock auth layer if full auth is too slow.
+- Hosting readiness: Vercel-compatible.
+- Source control friendly: clean folder structure, modular code, environment variable support.
+- Optional integrations placeholders: GitHub, Vercel, Neon, future Supabase-compatible abstraction if needed.
+
+PRIMARY PRODUCT GOAL
+Create a multi-tenant risk, control, and compliance management platform inspired by the attached CSV. The app must support multiple organizations, each with its own departments, users, controls, risks, owners, implementation dates, statuses, dashboards, and reports.
+
+VISUAL DIRECTION
+- Executive, enterprise, and premium look.
+- Dark mode and light mode.
+- Clean analytics dashboard with subtle 3D depth, glassmorphism accents, cards, charts, status pills, hover effects, and smooth transitions.
+- Responsive layout for desktop, tablet, and mobile.
+- Professional top bar with tenant switcher, notification bell, date filter, and user profile menu.
+- Sidebar navigation with icons.
+- Use realistic colors:
+  - Risk high = red
+  - Risk medium = amber
+  - Risk low = green
+  - Neutral enterprise slate/blue tones for structure.
+- Make the UI feel like a real governance and assurance platform, not a template.
+
+MULTI-TENANCY REQUIREMENTS
+Build the app so each organization is isolated by tenant.
+Include:
+- Tenant selection / organization switcher.
+- Organization profile with logo/name/sector.
+- Tenant-scoped departments, users, risks, controls, actions, and reports.
+- Role-based access levels:
+  - Super Admin
+  - Tenant Admin
+  - Risk Manager
+  - Department Owner
+  - Executive Viewer
+- Tenant-aware dashboard data and audit trail.
+- Seed at least 3 tenants:
+  - Government entity
+  - Parastatal
+  - Private sector company
+
+CORE MODULES
+1. Executive Dashboard
+- KPIs: Total Risks, Controls in Progress, Overdue Actions, High-Risk Items, Compliance Rate, Appetite Breaches.
+- Trend charts: risk levels by department, implementation progress over time, overdue controls, risk appetite status.
+- Summary cards with concise executive language.
+- “At a glance” insights panel with AI-style generated narrative text, but deterministic/demo data only.
+
+2. Risk & Control Register
+- Table view with search, filters, sorting, pagination.
+- Columns inspired by the CSV:
+  Department, Risk, Control, Control Owner, Implementation Date, Residual Risk Score, Within Appetite, Overall Risk Level, Implementation Status.
+- Clicking a row opens a detailed drawer/modal with full risk/control info.
+- Status badges and progress indicators.
+- Inline actions:
+  Mark as reviewed
+  Update status
+  Assign owner
+  Add note
+  Escalate
+  Export row
+
+3. Department View
+- Department profile with list of related risks and controls.
+- Performance summary by department.
+- Overdue and at-risk items.
+- Department-level charts and accountability map.
+
+4. Control Lifecycle
+- Controls can be in states like Draft, In Progress, Awaiting Review, Implemented, Overdue, Escalated.
+- Timeline view for implementation history.
+- Action log / audit trail.
+- Comment thread per control.
+
+5. Executive Reports
+- Generate demo-ready board packs and committee reports.
+- Export buttons for PDF/CSV placeholders.
+- Report cards such as:
+  - Monthly Risk Summary
+  - Appetite Breach Report
+  - Overdue Controls Report
+  - Department Accountability Report
+
+6. Administration
+- Tenant settings
+- Departments
+- Users and roles
+- Notification preferences
+- Branding and theme settings
+
+7. Audit Trail
+- Every meaningful action should write to an activity feed.
+- Include actor, action, item, timestamp, and result.
+- Make audit trail visible and credible for leadership demo.
+
+INTERACTIVE DEMO BEHAVIOR
+The buttons should actually do something in the demo:
+- Filtering updates tables and charts.
+- Clicking a control opens detail view.
+- “Mark complete” changes status and writes to audit trail.
+- “Escalate” moves item into escalated state and updates dashboard counts.
+- “Assign owner” opens a modal and updates the record.
+- “Generate report” opens a polished report preview modal with printable layout.
+- “Switch tenant” refreshes data to a different organization dataset.
+- “Add note” appends a note to the activity stream.
+- “Export CSV” should generate a downloadable CSV from current filtered data.
+- “Toggle theme” changes between dark and light mode.
+
+DATA REQUIREMENTS
+Use realistic seeded dummy data based on the attached CSV fields and patterns.
+Generate data for:
+- Departments
+- Risks
+- Controls
+- Owners
+- Implementation dates
+- Risk scores
+- Appetite status
+- Risk levels
+- Implementation statuses
+- Notes
+- Activity logs
+- Executive insights
+
+Base the content on a governance/risk/compliance environment similar to the CSV, including examples such as:
+- Corporate Affairs
+- Human Capital and Administration
+- Finance and Procurement
+- Strategy and Planning
+- Digital Transformation
+- Teaching Professional Services
+- Legal Secretariat
+- Ethics Standards Compliance
+- Risk and Internal Audit
+
+Make the data look believable and internally consistent:
+- Some items within appetite.
+- Some above appetite.
+- Mix of low, medium, high residual risk.
+- Some overdue implementation dates.
+- Some controls completed, some in progress, some awaiting review.
+- Use businesslike phrasing for control descriptions and risk statements.
+
+PAGE STRUCTURE
+- Landing page or demo login page.
+- Executive dashboard.
+- Risk register.
+- Department drill-down page.
+- Reports page.
+- Administration page.
+- Audit trail page.
+- Settings page.
+
+UX DETAILS
+- Use polished empty states.
+- Use skeleton loaders.
+- Use toast notifications.
+- Use confirmation dialogs for destructive actions.
+- Use icons throughout.
+- Include breadcrumbs.
+- Use tabs where useful.
+- Use modals/drawers for editing.
+- Add subtle animations and transitions.
+- Include a professional company logo placeholder and app name branding.
+
+ENGINEERING REQUIREMENTS
+- Build clean, maintainable, scalable code.
+- Separate concerns clearly:
+  - app routes
+  - components
+  - data seed/mock layer
+  - utilities
+  - types
+  - hooks
+  - Prisma schema
+- Create reusable UI components for KPI cards, status pills, tables, modals, charts, sidebars, tenant switcher, and audit feed.
+- Use mock API routes or server actions for CRUD-like interactions if needed.
+- Implement data in a way that can later be swapped to real Neon-backed persistence.
+- Use TypeScript types for all core entities.
+- Add validation with Zod where appropriate.
+- Ensure code runs without manual restructuring.
+
+DATABASE MODEL
+Design Prisma models for:
+- Tenant
+- User
+- Department
+- Risk
+- Control
+- Note
+- ActivityLog
+- Report
+- Notification
+- AuditEvent
+
+Include relationships between tenant, departments, risks, controls, users, and logs.
+Support soft deletion and timestamps.
+Seed sample data for 3 tenants and enough records to make the dashboard feel alive.
+
+DEMO CONTENT QUALITY
+This demo must be compelling for executives:
+- Use confident governance language.
+- Show board-level visibility.
+- Highlight accountability and risk appetite breaches.
+- Include a few strategic insights and next-step recommendations.
+- Make it feel like a genuine enterprise control platform.
+
+DELIVERABLES
+Generate:
+- Full working app code.
+- Seed/demo data.
+- Prisma schema.
+- Reusable components.
+- Clear README with setup instructions for Replit, Neon, GitHub, and Vercel deployment.
+- Environment variable example file.
+- A polished UI that is ready to demo immediately.
+
+IMPORTANT RULES
+- Do not leave placeholder screens that feel unfinished.
+- Do not use lorem ipsum.
+- Do not use fake broken buttons.
+- Do not hardcode a single tenant only; implement true tenant switching.
+- Do not make the app look like a toy.
+- Keep code readable and production-oriented.
+- If full backend persistence is too much for the first pass, create the app with a strong mock-data architecture that can later connect to Neon easily.
+- Prioritize demo quality, visual polish, and believable interactions.
+
+NOW GENERATE THE FULL APPLICATION CODEBASE.

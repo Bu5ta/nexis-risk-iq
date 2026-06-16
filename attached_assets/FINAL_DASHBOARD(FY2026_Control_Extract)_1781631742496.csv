@@ -1,0 +1,49 @@
+Department,Risk,Control,Owner,Implementation Date,Residual Risk Score,Within Appetite,Overall Risk Level,Implementation Status,Do Not Change Rating
+Corporate Affairs,Reputational Damage,Develop and implement comprehensive media engagement strategy,Manager- Corporate Affairs,31-Mar-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Corporate Affairs,Reputational Damage,Develop Corporate Communication Policy,Manager- Corporate Affairs,31-Mar-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Corporate Affairs,Leakage of Confidential Information,"Develop and enforce SOPs, including confidentiality controls",Manager- Corporate Affairs,30-Jan-2026,6,Above Risk Appetite,Medium,,Agreed rating preserved
+HC & Administration,High Staff Turnover,Enhance and document EVP,"Manager, Human Capital and Admin",31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+HC & Administration,High Staff Turnover,Develop and implement Training Plan,"Manager, Human Capital and Admin",31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+HC & Administration,High Staff Turnover,Participate in Annual Remuneration Survey,"Manager, Human Capital and Admin",31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+HC & Administration,Non-Compliance with HR Policies,Conduct Staff Induction,"Manager, Human Capital and Admin",31-Jan-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+HC & Administration,Non-Compliance with HR Policies,Create awareness post policies approval,"Manager, Human Capital and Admin",31-Jan-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+HC & Administration,Misuse of Council's assets,Develop and implement fleet Management Policy,"Manager, Human Capital and Admin",31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+HC & Administration,Misuse of Council's assets,Educate staff on car requisition process,"Manager, Human Capital and Admin",31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+HC & Administration,Misuse of Council's assets,Develop and implement a telephone usage policy,"Manager, Human Capital and Admin",31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+HC & Administration,Misuse of Council's assets,Monitor telephone and printer usage,"Manager, Human Capital and Admin",31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+Finance & Procurement,Loss of Assets,Introduce periodic physical assets verification,"Manager, Finance & Procurement",31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Finance & Procurement,Mistatement of Financial Reports,Internal training (Accpac),Manager- Finance and Procurement,,,,,,Agreed rating preserved
+Finance & Procurement,Corruption/Fraud in Procurement Process,Procurement training (PPRA),Manager- Finance and Procurement,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Finance & Procurement,Corruption/Fraud in Procurement Process,Develop and implement procurement procedures,Manager- Finance and Procurement,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Finance & Procurement,Budget Overruns,Enforce adherence to budget and procurement plan,Manager- Finance and Procurement,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Strategy Planning,Ineffective Strategy Execution,"Adopt project management tools to enhance planning, execution and monitoring",Strategy Manager,30-May-2025,12,Above Risk Appetite,High,,Agreed rating preserved
+Strategy Planning,Resource Constraints,Engage executive management for increased resource allocation; explore donor and partner support,Manager – Research,30-Oct-2025,9,Within Risk Appetite,Medium,,Agreed rating preserved
+Strategy Planning,Misaligned Organisational Culture,Develop a behavioural framework linked to organisational values,Strategy Manager,30-May-2025,9,Within Risk Appetite,Medium,,Agreed rating preserved
+Strategy Planning,Low Interdepartmental Collaboration,Enforce joint accountability through structured team plans and integrated reporting,Strategy Manager,30-Sep-2025,9,Within Risk Appetite,Medium,,Agreed rating preserved
+Digital Transformation,Cybersecurity Threats,Enforce the Information Security Policy and perform cybersecurity assessments,Senior Network & Infrastructure Administrator,31-Mar-2026,8,Within Risk Appetite,Medium,,Agreed rating preserved
+Digital Transformation,Data Management Risks,Activate the disaster recovery plan and enforce the Information Security Policy,Senior Systems Administrator,31-Jan-2026,8,Within Risk Appetite,Medium,,Agreed rating preserved
+Digital Transformation,ICT Infrastructure Vulnerabilities,Establish a backup internet link and stronger compliance controls,Senior Network & Infrastructure Administrator,28-Feb-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Digital Transformation,Business Continuity Failures,Reinforce Information Security compliance and activate disaster recovery procedures,"Manager, Digital Transformation & Innovation",31-Jan-2026,6,Within Risk Appetite,Medium,,Agreed rating preserved
+Digital Transformation,Emerging Technology Uncertainties,Pilot new technologies in controlled environments,Senior Systems Administrator,31-Mar-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Digital Transformation,IT Compliance Risks,Train personnel on compliance practices and conduct scheduled audits,"Manager, Digital Transformation & Innovation",31-Jan-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Digital Transformation,Cloud Service Downtime Risks,Strengthen service level agreements,"Manager, Digital Transformation & Innovation",28-Feb-2026,10,Within Risk Appetite,Medium,,Agreed rating preserved
+Teaching Professional Services,Teacher Registration and Licensing Delays,Development of a comprehensive transition plan,Manager – Teacher Registration / Teacher Licensing,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Teacher Registration and Licensing Delays,Enhancement of digital communication platforms,Manager – Teacher Registration / Teacher Licensing,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Teacher Registration and Licensing Delays,Introduction of customer help desk,Manager – Teacher Registration / Teacher Licensing,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Teacher Registration and Licensing Delays,Schools teacher registration outreach activities,Manager – Teacher Registration / Teacher Licensing,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Teacher Registration and Licensing Delays,Increase staffing or temporary processing support during peak periods,Manager – Teacher Registration / Teacher Licensing,31-Mar-2026,2,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Teacher and Stakeholder Resistance,Targeted stakeholder engagement activities,Manager – Teacher Registration,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Fraudulent Document Submission,Collaboration with institutions for direct verification,Manager – Teacher Registration,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Fraudulent Document Submission,Strengthen document verification processes,Manager – Teacher Registration,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Teaching Professional Services,Fraudulent Document Submission,Collaboration with BQA to facilitate operational efficiency,Manager – Teacher Registration,31-Mar-2026,3,Within Risk Appetite,Low,,Agreed rating preserved
+Legal & Secretarial,Delayed Board Re-appointment,Initiate communication with Ministry ahead of expiration of members' tenures,Director,31-Aug-2025,20,Above Risk Appetite,High,,Agreed rating preserved
+Legal & Secretarial,Delay in Formulation and Implementation of Policies,Maintain master list of policies and quarterly follow-up system,Senior Officer,31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+Legal & Secretarial,Inadequate Board Composition,Conduct skills audits and recommend training/awareness programmes,"Director, Legal and Corporate Secretary",31-Jul-2025,,,High,,Agreed rating preserved
+Legal & Secretarial,Delayed approval of regulations,Maintain regular communication with AGC,Director,31-Mar-2026,12,Above Risk Appetite,High,,Agreed rating preserved
+Ethics & Standards Compliance,Delay in Developing Teacher Code of Ethics,Establish a governance committee for oversight,Manager – E&SC,31-Mar-2026,20,Above Risk Appetite,High,,Agreed rating preserved
+Ethics & Standards Compliance,Non-Functional Monitoring Tools,Pilot tools in selected schools; annual feedback cycles,Compliance Officer,31-Mar-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Ethics & Standards Compliance,Weak Policy Framework,Benchmark policies against peers and conduct training,Director,31-Mar-2026,9,Above Risk Appetite,Medium,,Agreed rating preserved
+Ethics & Standards Compliance,Case Backlog,Finalise draft disciplinary procedures and SOPs,Senior Disciplinary Officer,31-Mar-2026,9,Above Risk Appetite,Medium,,Agreed rating preserved
+Ethics & Standards Compliance,Conflict of Interest,Create departmental Conflict of Interest form,Manager – Investigations,31-Mar-2026,4,Within Risk Appetite,Low,,Agreed rating preserved
+Risk & Internal Audit,Inadequate / late risk reporting,Introduce risk awareness/reporting training for Risk Champions and Management,Manager- Risk and Compliance,31-Mar-2026,2,Above Risk Appetite,Low,,Agreed rating preserved
+Risk & Internal Audit,Delayed completion of risk assessments & audits,Implement risk calendar/plans and assign risk champions,Manager- Risk and Compliance / Manager- Internal Audit,31-Mar-2026,3,Above Risk Appetite,Low,,Agreed rating preserved
