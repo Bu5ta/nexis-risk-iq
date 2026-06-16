@@ -54,3 +54,4 @@ api/server.mjs.map
 
 # Vercel build output
 artifacts/nexis/dist/
+.vercel/output/
