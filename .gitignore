@@ -52,6 +52,7 @@ Thumbs.db
 api/server.mjs
 api/server.mjs.map
 
-# Vercel build output
+# Vercel build output (config.json is committed so Vercel detects Build Output API mode pre-build)
 artifacts/nexis/dist/
-.vercel/output/
+.vercel/output/static/
+.vercel/output/functions/
