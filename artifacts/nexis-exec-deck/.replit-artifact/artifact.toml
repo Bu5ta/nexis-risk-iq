@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/nexis-exec-deck/"
+title = "NEXIS Risk-IQ Executive Briefing"
+version = "1.0.0"
+id = "artifacts/nexis-exec-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/nexis-exec-deck/" ]
+localPort = 18816
+
+[services.development]
+run = "pnpm --filter @workspace/nexis-exec-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nexis-exec-deck", "run", "build" ]
+publicDir = "artifacts/nexis-exec-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "18816"
+BASE_PATH = "/nexis-exec-deck/"

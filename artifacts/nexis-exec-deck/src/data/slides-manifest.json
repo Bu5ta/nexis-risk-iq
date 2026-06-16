@@ -1,0 +1,82 @@
+[
+  {
+    "id": "a1b2c3d4-0001-4e5f-8a9b-c0d1e2f30001",
+    "position": 1,
+    "filepath": "src/pages/slides/Slide01Cover.tsx",
+    "title": "NEXIS Risk-IQ",
+    "description": "Cover slide — The Intelligent GRC Platform for Government, Parastatal & Private Sector",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0002-4e5f-8a9b-c0d1e2f30002",
+    "position": 2,
+    "filepath": "src/pages/slides/Slide02CostOfRisk.tsx",
+    "title": "The Cost of Unmanaged Risk",
+    "description": "Four key statistics on regulatory fines, manual process burden, reporting time, and control failure risk",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0003-4e5f-8a9b-c0d1e2f30003",
+    "position": 3,
+    "filepath": "src/pages/slides/Slide03Capabilities.tsx",
+    "title": "Platform Capabilities",
+    "description": "Six integrated modules: Executive Dashboard, Risk & Control Register, Department Intelligence, Automated Reports, Audit Trail, RiskSight AI",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0004-4e5f-8a9b-c0d1e2f30004",
+    "position": 4,
+    "filepath": "src/pages/slides/Slide04Compliance.tsx",
+    "title": "Compliance Rate Improvement",
+    "description": "Before vs. After compliance bar chart (Q1–Q8) with key outcome metrics: +18pts, 62% backlog reduction, 74% overdue actions reduced",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0005-4e5f-8a9b-c0d1e2f30005",
+    "position": 5,
+    "filepath": "src/pages/slides/Slide05CostOptimisation.tsx",
+    "title": "Cost Optimisation",
+    "description": "Three direct cost saving areas: 60% labour reduction, audit prep under 4 hours, $1.2M penalty avoidance. 8–14× 3-year cost avoidance.",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0006-4e5f-8a9b-c0d1e2f30006",
+    "position": 6,
+    "filepath": "src/pages/slides/Slide06RiskSightAI.tsx",
+    "title": "RiskSight AI",
+    "description": "AI intelligence layer: Executive Briefings, Anomaly Detection, Predictive Compliance Forecast, Natural Language Q&A",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0007-4e5f-8a9b-c0d1e2f30007",
+    "position": 7,
+    "filepath": "src/pages/slides/Slide07MultiTenant.tsx",
+    "title": "Multi-Tenant Architecture",
+    "description": "Three tenant profiles: National Revenue Authority (Government), Meridian Power & Utilities (Parastatal), Apex Financial Services (Private)",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0008-4e5f-8a9b-c0d1e2f30008",
+    "position": 8,
+    "filepath": "src/pages/slides/Slide08Timeline.tsx",
+    "title": "Implementation Timeline",
+    "description": "Structured 90-day deployment: Foundation (Wk 1–2), Configuration (Wk 3–4), Go-Live (Month 2), Full Deployment (Month 3)",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0009-4e5f-8a9b-c0d1e2f30009",
+    "position": 9,
+    "filepath": "src/pages/slides/Slide09ROI.tsx",
+    "title": "Return on Investment",
+    "description": "3-Year Financial Case: $120K investment, $210K labour savings, $480K penalty avoidance, $90K audit gains — Net $660K, 5.5× ROI",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a1b2c3d4-0010-4e5f-8a9b-c0d1e2f30010",
+    "position": 10,
+    "filepath": "src/pages/slides/Slide10NextSteps.tsx",
+    "title": "Next Steps",
+    "description": "Three paths: Executive Demo, Proof of Concept (30-day pilot), Full Deployment. Contact: RiskInteg Solution Services.",
+    "speakerNotes": ""
+  }
+]
