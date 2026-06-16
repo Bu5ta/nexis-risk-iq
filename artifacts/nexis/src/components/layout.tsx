@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "wouter";
 import { useTenant } from "@/lib/tenant-context";
 import { useListTenants } from "@workspace/api-client-react";
-import { Shield, LayoutDashboard, Database, Building2, FileText, History, Settings, Moon, Sun, Monitor, LogOut } from "lucide-react";
+import { Shield, LayoutDashboard, Database, Building2, FileText, History, Settings, Moon, Sun, Monitor, LogOut, Brain } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -34,6 +34,7 @@ const navItems = [
   { title: "Departments", url: "/departments", icon: Building2 },
   { title: "Reports", url: "/reports", icon: FileText },
   { title: "Audit Trail", url: "/audit", icon: History },
+  { title: "RiskSight AI", url: "/risksight", icon: Brain },
   { title: "Admin", url: "/admin", icon: Settings },
 ];
 

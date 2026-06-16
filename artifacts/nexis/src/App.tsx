@@ -15,6 +15,7 @@ import DepartmentDetail from "@/pages/department-detail";
 import Reports from "@/pages/reports";
 import Audit from "@/pages/audit";
 import Admin from "@/pages/admin";
+import RiskSightAI from "@/pages/risksight";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function Router() {
         <Route path="/reports" component={Reports} />
         <Route path="/audit" component={Audit} />
         <Route path="/admin" component={Admin} />
+        <Route path="/risksight" component={RiskSightAI} />
         <Route path="/" component={Dashboard} />
         <Route component={NotFound} />
       </Switch>
