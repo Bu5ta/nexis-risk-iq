@@ -49,7 +49,9 @@ Three-tenant GRC dashboard with:
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+- **Target market: Botswana public & private sector organisations** — clients primarily use manual, spreadsheet-based processes. API integrations are uncommon and should never be assumed. Every feature must work fully without any API connection.
+- **Dual-mode data ingestion is non-negotiable:** the system must support (1) manual data entry via forms and (2) spreadsheet import (CSV/Excel upload) as the primary on-ramp. API connectors are a secondary, future-ready layer — expose the endpoints but don't require them.
+- When building data entry or import features, always design for the non-technical civil servant or compliance officer first, then layer in the technical path.
 
 ## Gotchas
 
