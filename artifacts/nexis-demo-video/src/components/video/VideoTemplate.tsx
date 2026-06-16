@@ -64,65 +64,50 @@ export default function VideoTemplate({
   const sceneIndex = Object.keys(SCENE_DURATIONS).indexOf(baseSceneKey);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const playPromiseRef = useRef<Promise<void> | null>(null);
 
   useEffect(() => {
     onSceneChange?.(currentSceneKey);
   }, [currentSceneKey, onSceneChange]);
 
-  // Handle scene changes: seek to the right position and play
+  // Stop audio on unmount — critical when key={mountKey} causes a remount,
+  // otherwise the old audio element keeps playing in the browser after removal.
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+      }
+    };
+  }, []);
+
+  // Single unified audio effect — always pause() synchronously first.
+  // The browser safely rejects any in-flight play promise with AbortError,
+  // so no async cascade can cause overlapping playback.
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
     audio.volume = 0.45;
+    audio.muted = muted;
+
+    // Always stop first — this kills any ongoing playback immediately
+    audio.pause();
 
     const targetTime = SCENE_START_SEC[baseSceneKey] ?? 0;
-    const needsSeek = Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC;
-
-    const doPlay = () => {
-      if (audio.muted) return;
-      const p = audio.play();
-      playPromiseRef.current = p;
-      p?.catch(() => {});
-    };
-
-    if (needsSeek) {
-      // Pause before seeking to avoid double-audio overlap
-      const pending = playPromiseRef.current;
-      if (pending) {
-        pending.then(() => {
-          audio.pause();
-          audio.currentTime = targetTime;
-          doPlay();
-        }).catch(() => {
-          audio.currentTime = targetTime;
-          doPlay();
-        });
-      } else {
-        audio.pause();
-        audio.currentTime = targetTime;
-        doPlay();
-      }
-    } else {
-      if (!audio.paused && !audio.muted) return;
-      doPlay();
+    if (Math.abs(audio.currentTime - targetTime) > AUDIO_SEEK_EPSILON_SEC) {
+      audio.currentTime = targetTime;
     }
-  }, [currentSceneKey, baseSceneKey]);
 
-  // Handle muted toggle independently — no seek, just pause/resume
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    audio.muted = muted;
-    if (muted) {
-      audio.pause();
-    } else {
-      const p = audio.play();
-      playPromiseRef.current = p;
-      p?.catch(() => {});
+    if (!muted) {
+      audio.play().catch((err: Error) => {
+        // AbortError = we paused before play resolved — harmless
+        if (err.name !== 'AbortError') {
+          console.warn('Audio play error:', err.name, err.message);
+        }
+      });
     }
-  }, [muted]);
+  }, [currentSceneKey, baseSceneKey, muted]);
 
   const SceneComponent = SCENE_COMPONENTS[baseSceneKey];
 
