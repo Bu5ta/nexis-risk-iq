@@ -354,7 +354,7 @@ function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; o
         </button>
       </div>
 
-      <ul className="space-y-2 text-left w-full max-w-sm">
+      <ul className="space-y-2 text-left w-full max-w-sm mb-10">
         {FEATURES.map((f, i) => (
           <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
             <f.icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
@@ -362,6 +362,26 @@ function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; o
           </li>
         ))}
       </ul>
+
+      {/* Partnership footer */}
+      <div className="flex flex-col items-center gap-3 border-t pt-6 w-full max-w-sm">
+        <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+          A NEXIS product · In partnership with
+        </p>
+        <div className="flex items-center gap-3">
+          <div className="bg-white rounded-xl overflow-hidden shrink-0" style={{ width: 44, height: 44 }}>
+            <img
+              src={`${BASE}images/riskinteg-brochure.jpg`}
+              alt="RiskInteg"
+              style={{ width: 44, height: 44, objectFit: "contain" }}
+            />
+          </div>
+          <div className="text-left">
+            <div className="text-sm font-semibold">RiskInteg Solution Services</div>
+            <div className="text-xs text-muted-foreground">info@riskinteg.co.bw</div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
