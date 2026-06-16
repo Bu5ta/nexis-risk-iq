@@ -1,0 +1,31 @@
+kind = "video"
+previewPath = "/nexis-demo-video/"
+title = "NEXIS Risk-IQ Product Demo"
+version = "1.0.0"
+id = "artifacts/nexis-demo-video"
+router = "path"
+
+[[integratedSkills]]
+name = "video-js"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/nexis-demo-video/" ]
+localPort = 22787
+
+[services.development]
+run = "pnpm --filter @workspace/nexis-demo-video run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/nexis-demo-video", "run", "build" ]
+publicDir = "artifacts/nexis-demo-video/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22787"
+BASE_PATH = "/nexis-demo-video/"

@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "ZVEd9O7cRKD9sV2ihFPEC"
+uri = "file://artifacts/nexis-demo-video/public/audio/bg_music.mp3"
+type = "audio"
+title = "background music"
