@@ -1,4 +1,4 @@
-// Builds the Express server into api/server.mjs for Vercel deployment
+// Builds api/entry.ts → api/server.mjs for Vercel deployment
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,16 +7,16 @@ import { rm } from "node:fs/promises";
 
 globalThis.require = createRequire(import.meta.url);
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const apiDir = path.dirname(fileURLToPath(import.meta.url));
 
-await rm(path.join(root, "api", "server.mjs"), { force: true });
+await rm(path.join(apiDir, "server.mjs"), { force: true });
 
 await esbuild({
-  entryPoints: [path.join(root, "artifacts/api-server/src/app.ts")],
+  entryPoints: [path.join(apiDir, "entry.ts")],
   platform: "node",
   bundle: true,
   format: "esm",
-  outfile: path.join(root, "api/server.mjs"),
+  outfile: path.join(apiDir, "server.mjs"),
   logLevel: "info",
   external: [
     "*.node", "sharp", "bcrypt", "argon2", "fsevents", "pg-native",
@@ -33,4 +33,4 @@ globalThis.__dirname = __bPath.dirname(globalThis.__filename);
   },
 });
 
-console.log("API bundle written to api/server.mjs");
+console.log("✓ api/server.mjs built");
