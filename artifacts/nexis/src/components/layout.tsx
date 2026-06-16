@@ -2,7 +2,8 @@ import React from "react";
 import { Link, useLocation } from "wouter";
 import { useTenant } from "@/lib/tenant-context";
 import { useListTenants } from "@workspace/api-client-react";
-import { Shield, LayoutDashboard, Database, Building2, FileText, History, Settings, Moon, Sun, Monitor, LogOut, Brain } from "lucide-react";
+import { LayoutDashboard, Database, Building2, FileText, History, Settings, Moon, Sun, Monitor, LogOut, Brain } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +28,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
+const BASE = import.meta.env.BASE_URL;
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -65,9 +68,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <div className="flex min-h-[100dvh] w-full">
         <Sidebar className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground">
           <SidebarHeader className="p-4 flex flex-row items-center gap-2">
-            <div className="bg-primary/20 p-2 rounded-md">
-              <Shield className="w-6 h-6 text-primary" />
-            </div>
+            <img
+              src={`${BASE}images/nexis-icon.svg`}
+              alt="NEXIS"
+              className="w-9 h-9 shrink-0 drop-shadow-[0_0_8px_rgba(0,212,255,0.5)]"
+            />
             <div className="flex flex-col">
               <span className="font-bold text-lg leading-tight tracking-tight">NEXIS</span>
               <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">Risk-IQ</span>
@@ -92,6 +97,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
+
+          {/* Partnership footer */}
+          <div className="p-3 border-t border-sidebar-border mt-auto">
+            <p className="text-[9px] uppercase tracking-widest text-muted-foreground mb-2 text-center font-medium">
+              In Partnership With
+            </p>
+            <div className="bg-white rounded-md overflow-hidden mx-auto" style={{ width: 132, height: 36 }}>
+              <img
+                src={`${BASE}images/riskinteg-brochure.jpg`}
+                alt="RiskInteg Solution Services"
+                style={{ width: 305, height: 'auto', marginTop: -5, marginLeft: -5 }}
+              />
+            </div>
+          </div>
         </Sidebar>
 
         <div className="flex-1 flex flex-col min-w-0">

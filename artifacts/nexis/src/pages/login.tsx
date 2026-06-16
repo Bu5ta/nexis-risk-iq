@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Shield, Building2, User, UserCheck } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
+const BASE = import.meta.env.BASE_URL;
+
 export default function Login() {
   const [, setLocation] = useLocation();
   const { setTenant, setRole } = useTenant();
@@ -28,11 +30,31 @@ export default function Login() {
     <div className="min-h-[100dvh] w-full bg-background flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-4xl space-y-8">
         <div className="text-center space-y-2">
-          <div className="mx-auto w-16 h-16 bg-primary/20 rounded-xl flex items-center justify-center mb-6">
-            <Shield className="w-10 h-10 text-primary" />
+          {/* NEXIS logo */}
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img
+              src={`${BASE}images/nexis-icon.svg`}
+              alt="NEXIS"
+              className="w-14 h-14 drop-shadow-[0_0_12px_rgba(0,212,255,0.5)]"
+            />
+            <div className="flex flex-col items-start">
+              <span className="text-3xl font-bold tracking-tight leading-tight">NEXIS</span>
+              <span className="text-xl font-light text-primary leading-tight">Risk-IQ</span>
+            </div>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight">NEXIS Risk-IQ</h1>
           <p className="text-muted-foreground text-lg">Select a demo workspace to enter</p>
+
+          {/* Partnership strip */}
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <span className="text-xs text-muted-foreground uppercase tracking-widest font-medium">In Partnership With</span>
+            <div className="bg-white rounded-lg overflow-hidden shadow-sm" style={{ width: 160, height: 44 }}>
+              <img
+                src={`${BASE}images/riskinteg-brochure.jpg`}
+                alt="RiskInteg Solution Services"
+                style={{ width: 370, height: 'auto', marginTop: -6, marginLeft: -6 }}
+              />
+            </div>
+          </div>
         </div>
 
         {isLoading ? (
