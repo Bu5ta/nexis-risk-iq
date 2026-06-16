@@ -5,10 +5,11 @@
 //   config.json      ← routes config
 import { cp, mkdir, writeFile, rm } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+// Use process.cwd() — Vercel runs the build from the repo root (/vercel/path0)
+const root = process.cwd();
 const out = path.join(root, ".vercel", "output");
+console.log(`Building Vercel output at: ${out}`);
 
 // Clean previous output
 await rm(out, { recursive: true, force: true });
