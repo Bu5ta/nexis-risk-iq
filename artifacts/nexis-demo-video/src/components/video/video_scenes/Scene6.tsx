@@ -54,21 +54,21 @@ export function Scene6() {
         <div className="flex items-center gap-5 bg-white/5 rounded-2xl px-6 py-4 border border-white/10">
           {/* RiskInteg logo — clean square */}
           <div
-            className="bg-white rounded-xl overflow-hidden shadow-[0_0_24px_rgba(255,255,255,0.12)] flex items-center justify-center flex-shrink-0"
-            style={{ width: 72, height: 72 }}
+            className="bg-white rounded-2xl overflow-hidden shadow-[0_0_32px_rgba(255,255,255,0.18)] flex items-center justify-center flex-shrink-0"
+            style={{ width: 110, height: 110 }}
           >
             <img
               src={`${BASE}images/riskinteg-logo.jpg`}
               alt="RiskInteg Solution Services"
-              style={{ width: 72, height: 72, objectFit: 'contain' }}
+              style={{ width: 102, height: 102, objectFit: 'contain' }}
             />
           </div>
 
-          <div className="w-px h-10 bg-white/20" />
+          <div className="w-px h-12 bg-white/20" />
 
           <div className="flex flex-col">
-            <span className="text-lg font-bold text-white">RiskInteg Solution Services</span>
-            <span className="text-sm text-white/50 font-mono">Exclusive go-to-market partner for NEXIS Risk-IQ</span>
+            <span className="text-xl font-bold text-white">RiskInteg Solution Services</span>
+            <span className="text-base text-white/50 font-mono">Exclusive go-to-market partner for NEXIS Risk-IQ</span>
           </div>
         </div>
       </motion.div>

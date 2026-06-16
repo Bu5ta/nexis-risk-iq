@@ -90,18 +90,18 @@ export function Scene1() {
         <div className="flex items-center gap-4">
           {/* RiskInteg logo — clean square display */}
           <div
-            className="bg-white rounded-xl overflow-hidden shadow-[0_0_20px_rgba(255,255,255,0.15)] flex items-center justify-center"
-            style={{ width: 80, height: 80 }}
+            className="bg-white rounded-2xl overflow-hidden shadow-[0_0_28px_rgba(255,255,255,0.2)] flex items-center justify-center"
+            style={{ width: 120, height: 120 }}
           >
             <img
               src={`${BASE}images/riskinteg-logo.jpg`}
               alt="RiskInteg Solution Services"
-              style={{ width: 80, height: 80, objectFit: 'contain' }}
+              style={{ width: 112, height: 112, objectFit: 'contain' }}
             />
           </div>
           <div className="flex flex-col">
-            <span className="text-base font-bold text-white tracking-wide">RiskInteg Solution Services</span>
-            <span className="text-sm text-white/50 font-mono">Delivering NEXIS Risk-IQ to the market</span>
+            <span className="text-xl font-bold text-white tracking-wide">RiskInteg Solution Services</span>
+            <span className="text-base text-white/50 font-mono">Delivering NEXIS Risk-IQ to the market</span>
           </div>
         </div>
       </motion.div>

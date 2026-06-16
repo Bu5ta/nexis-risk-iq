@@ -70,7 +70,9 @@ export default function Slide10NextSteps() {
 
       {/* Right: contact + tagline */}
       <div className="absolute flex flex-col justify-center items-start" style={{ top: "0", right: "0", width: "40vw", height: "100vh", padding: "0 5vw 0 4vw" }}>
-        <img src={`${base}riskinteg-logo.jpg`} crossOrigin="anonymous" alt="RiskInteg" style={{ height: "7vh", width: "auto", borderRadius: "0.6vw", marginBottom: "4vh", opacity: 0.95 }} />
+        <div style={{ background: "#FFFFFF", borderRadius: "0.8vw", padding: "0.8vw", boxShadow: "0 2px 16px rgba(0,0,0,0.2)", marginBottom: "4vh" }}>
+          <img src={`${base}riskinteg-logo.jpg`} crossOrigin="anonymous" alt="RiskInteg" style={{ height: "10vh", width: "10vh", objectFit: "contain", display: "block" }} />
+        </div>
 
         <div className="font-body font-semibold tracking-widest uppercase" style={{ color: "rgba(255,255,255,0.7)", fontSize: "1.1vw", marginBottom: "1.5vh" }}>Contact</div>
         <div className="font-display font-bold" style={{ color: "#FFFFFF", fontSize: "2vw", marginBottom: "5vh", lineHeight: 1.3 }}>

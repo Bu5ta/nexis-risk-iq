@@ -104,14 +104,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               In Partnership With
             </p>
             <div className="flex items-center justify-center gap-2">
-              <div className="bg-white rounded-md overflow-hidden flex items-center justify-center flex-shrink-0" style={{ width: 32, height: 32 }}>
+              <div className="bg-white rounded-lg overflow-hidden flex items-center justify-center flex-shrink-0 shadow-sm" style={{ width: 48, height: 48 }}>
                 <img
                   src={`${BASE}images/riskinteg-brochure.jpg`}
                   alt="RiskInteg Solution Services"
-                  style={{ width: 32, height: 32, objectFit: 'contain' }}
+                  style={{ width: 44, height: 44, objectFit: 'contain' }}
                 />
               </div>
-              <span className="text-[10px] font-semibold text-sidebar-foreground leading-tight">RiskInteg<br/>Solution Services</span>
+              <span className="text-[11px] font-semibold text-sidebar-foreground leading-tight">RiskInteg<br/>Solution Services</span>
             </div>
           </div>
         </Sidebar>

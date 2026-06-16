@@ -48,3 +48,9 @@ id = "WJ-6s8I55r3I36uSHBd5Z"
 uri = "file://.local/outputs/Asset-Manager.pdf"
 type = "pdf"
 title = "Asset Manager.pdf"
+
+[[outputs]]
+id = "DQIgkc422ZHurjTHOvj50"
+uri = "file://.local/outputs/Asset-Manager.pptx"
+type = "slides"
+title = "Asset Manager.pptx"

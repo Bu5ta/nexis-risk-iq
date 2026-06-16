@@ -14,8 +14,10 @@ export default function Slide01Cover() {
       </div>
 
       {/* RiskInteg logo top right */}
-      <div className="absolute flex items-center" style={{ top: "4vh", right: "5vw" }}>
-        <img src={`${base}riskinteg-logo.jpg`} crossOrigin="anonymous" alt="RiskInteg" style={{ height: "5vh", width: "auto", borderRadius: "0.4vw", opacity: 0.92 }} />
+      <div className="absolute flex items-center" style={{ top: "3vh", right: "4vw" }}>
+        <div style={{ background: "#FFFFFF", borderRadius: "0.6vw", padding: "0.5vw", boxShadow: "0 2px 12px rgba(0,0,0,0.2)" }}>
+          <img src={`${base}riskinteg-logo.jpg`} crossOrigin="anonymous" alt="RiskInteg" style={{ height: "8vh", width: "8vh", objectFit: "contain", display: "block" }} />
+        </div>
       </div>
 
       {/* Main content */}
