@@ -6,3 +6,39 @@ id = "ZVEd9O7cRKD9sV2ihFPEC"
 uri = "file://artifacts/nexis-demo-video/public/audio/bg_music.mp3"
 type = "audio"
 title = "background music"
+
+[[outputs]]
+id = "blCMu3qfUviOhWYZ5Ja5b"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_intro.mp3"
+type = "audio"
+title = "intro voiceover"
+
+[[outputs]]
+id = "2VVmkMTSdxu1E7xvyK-_h"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_dashboard.mp3"
+type = "audio"
+title = "dashboard voiceover"
+
+[[outputs]]
+id = "PXtaG1FCxSCawg6zdtcXp"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_problem.mp3"
+type = "audio"
+title = "problem voiceover"
+
+[[outputs]]
+id = "Na6vIjhhYVSC6pBDbbEpz"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_register.mp3"
+type = "audio"
+title = "register voiceover"
+
+[[outputs]]
+id = "38z6HAVX3SrWSxk0-9sam"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_governance.mp3"
+type = "audio"
+title = "governance voiceover"
+
+[[outputs]]
+id = "J_owTNJICAI1zHTS9SwP9"
+uri = "file://artifacts/nexis-demo-video/public/audio/vo_outro.mp3"
+type = "audio"
+title = "outro voiceover"
