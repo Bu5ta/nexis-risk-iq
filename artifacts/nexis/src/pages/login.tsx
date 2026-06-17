@@ -85,9 +85,9 @@ const DEMO_TENANTS = [
 // ─── Feature highlights ────────────────────────────────────────────────────────
 
 const FEATURES = [
-  { icon: Shield, text: "Risk register with full control lifecycle management" },
-  { icon: BarChart3, text: "Executive dashboard with real-time KPIs and appetite tracking" },
-  { icon: Users, text: "Role-based access for all levels — from Risk Champions to Executive Management" },
+  { icon: Shield, text: "ISO 31000 & COSO-aligned risk register with full control lifecycle tracking" },
+  { icon: BarChart3, text: "Board-ready dashboards with real-time KPIs, risk appetite, and assurance ratings" },
+  { icon: Users, text: "Enterprise RBAC from Risk Champions to Executive Management and the Board" },
 ];
 
 // ─── Company Sign-In Panel ─────────────────────────────────────────────────────
@@ -322,11 +322,11 @@ function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; o
       {/* Headline */}
       <div>
         <h1 className="text-2xl font-bold tracking-tight mb-2">
-          Governance, Risk &amp; Compliance<br />
-          <span className="text-primary">for Botswana organisations</span>
+          Enterprise Risk Intelligence<br />
+          <span className="text-primary">at global standard</span>
         </h1>
         <p className="text-muted-foreground text-sm max-w-sm mx-auto">
-          The modern GRC platform built for public, parastatal, and private sector — manual-first, no IT integration required.
+          ISO 31000 · COSO · King IV aligned — purpose-built for Botswana and the global community. Governance without compromise.
         </p>
       </div>
 
@@ -416,10 +416,10 @@ export default function Login() {
         <div className="space-y-6">
           <div>
             <h2 className="text-3xl font-bold text-white leading-tight mb-3">
-              Your complete GRC platform
+              Global-standard risk intelligence
             </h2>
             <p className="text-slate-400 text-sm leading-relaxed">
-              Designed for Botswana's public and private sector organisations — from Risk Champions to Executive Management.
+              ISO 31000, COSO, and King IV aligned. Built for Botswana's leading organisations — and designed to scale globally.
             </p>
           </div>
 
