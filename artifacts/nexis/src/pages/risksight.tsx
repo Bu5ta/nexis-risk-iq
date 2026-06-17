@@ -223,7 +223,7 @@ export default function RiskSightAI() {
             <h1 className="text-3xl font-bold tracking-tight">RiskSight AI</h1>
             <Badge className="bg-primary/20 text-primary border-primary/30 font-mono text-[10px]">BETA</Badge>
           </div>
-          <p className="text-muted-foreground">AI-powered intelligence layer — GPT-4o mini + statistical ML analytics</p>
+          <p className="text-muted-foreground">Smart insights that surface patterns, flag emerging risks, and guide better decisions — automatically</p>
         </div>
       </div>
 
