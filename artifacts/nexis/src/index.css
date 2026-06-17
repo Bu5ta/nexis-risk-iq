@@ -66,103 +66,111 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ─── Light Mode — "Cool Slate" ─────────────────────────────────────── */
+/* Off-white background, white cards elevated on it, dark navy sidebar   */
 :root {
-  --background: 210 40% 98%;
-  --foreground: 222 47% 11%;
-  
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --card-border: 214 32% 91%;
-  
+  --background: 220 22% 95%;          /* #EBEff5 — cool slate, not glaring white */
+  --foreground: 220 38% 11%;          /* #111927 — very dark navy */
+
+  --card: 0 0% 100%;                  /* white cards sit elevated on slate base */
+  --card-foreground: 220 38% 11%;
+  --card-border: 220 18% 87%;         /* #D2D9E6 */
+
   --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --popover-border: 214 32% 91%;
-  
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
-  
-  --secondary: 214 32% 91%;
-  --secondary-foreground: 222 47% 11%;
-  
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  
-  --accent: 210 40% 96%;
-  --accent-foreground: 222 47% 11%;
-  
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 40% 98%;
-  
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 221 83% 53%;
-  
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-primary: 221 83% 53%;
-  --sidebar-primary-foreground: 210 40% 98%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 221 83% 53%;
-  
-  --chart-1: 221 83% 53%;
-  --chart-2: 214 32% 91%;
-  --chart-3: 142 71% 45%;
-  --chart-4: 38 92% 50%;
-  --chart-5: 0 84% 60%;
-  
+  --popover-foreground: 220 38% 11%;
+  --popover-border: 220 18% 87%;
+
+  --primary: 213 80% 44%;             /* #1460C8 — deep enterprise blue */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 18% 91%;           /* #DDE3EE */
+  --secondary-foreground: 220 38% 11%;
+
+  --muted: 220 18% 93%;               /* #E4E9F3 */
+  --muted-foreground: 220 14% 46%;    /* #647090 — mid-slate, clearly readable */
+
+  --accent: 213 55% 93%;              /* #E2EEF9 — pale blue tint */
+  --accent-foreground: 213 80% 38%;
+
+  --destructive: 2 72% 44%;           /* #C32626 — strong accessible red on white */
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 220 18% 87%;
+  --input: 220 18% 90%;
+  --ring: 213 80% 44%;
+
+  /* Sidebar stays dark — professional enterprise contrast */
+  --sidebar: 220 38% 11%;             /* #111927 — matches foreground = full inversion */
+  --sidebar-foreground: 215 24% 90%;  /* #DDE4EF */
+  --sidebar-border: 220 32% 17%;      /* #1D2739 */
+  --sidebar-primary: 213 86% 65%;     /* #4E9EF8 — bright on dark */
+  --sidebar-primary-foreground: 220 38% 9%;
+  --sidebar-accent: 220 30% 16%;      /* #1A2537 */
+  --sidebar-accent-foreground: 215 24% 90%;
+  --sidebar-ring: 213 86% 65%;
+
+  --chart-1: 213 80% 44%;
+  --chart-2: 220 18% 75%;
+  --chart-3: 150 58% 38%;
+  --chart-4: 36 90% 48%;
+  --chart-5: 2 72% 50%;
+
   --app-font-sans: "Inter", sans-serif;
   --app-font-serif: Georgia, serif;
   --app-font-mono: Menlo, monospace;
   --radius: 0.5rem;
 }
 
+/* ─── Dark Mode — "Midnight Slate" ──────────────────────────────────── */
+/* Deep midnight navy base, clearly elevated cards, coral red destructive */
 .dark {
-  --background: 222 47% 11%;
-  --foreground: 210 40% 98%;
-  
-  --card: 217 32% 17%;
-  --card-foreground: 210 40% 98%;
-  --card-border: 217 32% 17%;
-  
-  --popover: 217 32% 17%;
-  --popover-foreground: 210 40% 98%;
-  --popover-border: 217 32% 17%;
-  
-  --primary: 217 91% 60%;
-  --primary-foreground: 222 47% 11%;
-  
-  --secondary: 217 32% 17%;
-  --secondary-foreground: 210 40% 98%;
-  
-  --muted: 217 32% 17%;
-  --muted-foreground: 215 20.2% 65.1%;
-  
-  --accent: 217 32% 17%;
-  --accent-foreground: 210 40% 98%;
-  
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  
-  --border: 217 32% 17%;
-  --input: 217 32% 17%;
-  --ring: 212.7 26.8% 83.9%;
-  
-  --sidebar: 222 47% 11%;
-  --sidebar-foreground: 210 40% 98%;
-  --sidebar-border: 217 32% 17%;
-  --sidebar-primary: 217 91% 60%;
-  --sidebar-primary-foreground: 222 47% 11%;
-  --sidebar-accent: 217 32% 17%;
-  --sidebar-accent-foreground: 210 40% 98%;
-  --sidebar-ring: 212.7 26.8% 83.9%;
-  
-  --chart-1: 217 91% 60%;
-  --chart-2: 217 32% 17%;
-  --chart-3: 142 71% 45%;
-  --chart-4: 38 92% 50%;
-  --chart-5: 0 62.8% 30.6%;
+  --background: 220 28% 9%;           /* #0E1420 — midnight navy, not pure black */
+  --foreground: 215 28% 90%;          /* #DAE3F0 — warm-cool white, easy on eyes */
+
+  --card: 220 26% 13%;                /* #172030 — perceptibly lighter than bg */
+  --card-foreground: 215 28% 90%;
+  --card-border: 220 22% 21%;         /* #293444 — visible, not harsh */
+
+  --popover: 220 26% 15%;             /* #1B273A */
+  --popover-foreground: 215 28% 90%;
+  --popover-border: 220 22% 21%;
+
+  --primary: 213 90% 63%;             /* #4B9AF6 — electric blue, pops on dark */
+  --primary-foreground: 220 28% 8%;
+
+  --secondary: 220 24% 17%;           /* #1F2D3E */
+  --secondary-foreground: 215 28% 90%;
+
+  --muted: 220 24% 15%;               /* #1A2535 */
+  --muted-foreground: 218 20% 62%;    /* #8899B8 — clearly readable muted text */
+
+  --accent: 220 24% 17%;
+  --accent-foreground: 215 28% 90%;
+
+  /* KEY FIX: coral red at 60% lightness — vivid and readable on dark bg */
+  --destructive: 2 80% 60%;           /* #F04040 */
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 220 22% 21%;
+  --input: 220 24% 17%;
+  --ring: 213 90% 63%;
+
+  /* Sidebar slightly darker than main bg for clear separation */
+  --sidebar: 220 30% 7%;              /* #0A1019 */
+  --sidebar-foreground: 215 22% 86%;  /* #CFD9EB */
+  --sidebar-border: 220 26% 13%;      /* #172030 */
+  --sidebar-primary: 213 90% 63%;
+  --sidebar-primary-foreground: 220 30% 7%;
+  --sidebar-accent: 220 26% 12%;      /* #14202E */
+  --sidebar-accent-foreground: 215 22% 86%;
+  --sidebar-ring: 213 90% 63%;
+
+  --chart-1: 213 90% 63%;
+  --chart-2: 220 24% 28%;
+  --chart-3: 150 60% 48%;
+  --chart-4: 36 90% 58%;
+  --chart-5: 2 80% 60%;
+
 }
 
 @layer base {
@@ -171,5 +179,21 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
+  }
+
+  /* Refined scrollbars */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground));
   }
 }
