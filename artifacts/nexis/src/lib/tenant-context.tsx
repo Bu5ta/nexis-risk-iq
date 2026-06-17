@@ -13,6 +13,7 @@ interface TenantContextType {
   currentRole: string | null;
   currentUser: CurrentUser | null;
   isDemoMode: boolean;
+  isInitialized: boolean;
   setTenant: (tenantId: string) => void;
   setRole: (role: string) => void;
   setUser: (user: CurrentUser | null) => void;
@@ -36,6 +37,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
   const [currentRole, setCurrentRoleState] = useState<string | null>(null);
   const [currentUser, setCurrentUserState] = useState<CurrentUser | null>(null);
   const [isDemoMode, setIsDemoModeState] = useState<boolean>(false);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
 
   useEffect(() => {
     const tenant = localStorage.getItem("nexis_tenant");
@@ -46,6 +48,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
     if (role) setCurrentRoleState(role);
     if (user) setCurrentUserState(user);
     setIsDemoModeState(demo);
+    setIsInitialized(true);
   }, []);
 
   const setTenant = (tenantId: string) => {
@@ -85,7 +88,7 @@ export function TenantProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <TenantContext.Provider value={{
-      currentTenant, currentRole, currentUser, isDemoMode,
+      currentTenant, currentRole, currentUser, isDemoMode, isInitialized,
       setTenant, setRole, setUser, setDemoMode, logout,
     }}>
       {children}

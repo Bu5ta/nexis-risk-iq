@@ -43,21 +43,22 @@ const navItems = [
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useLocation();
-  const { currentTenant, currentRole, currentUser, isDemoMode, logout, setTenant } = useTenant();
+  const { currentTenant, currentRole, currentUser, isDemoMode, isInitialized, logout, setTenant } = useTenant();
   const { theme, setTheme } = useTheme();
   
   const { data: tenants } = useListTenants();
   
   const activeTenant = tenants?.find((t) => t.id === currentTenant);
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated (wait for localStorage to load first)
   React.useEffect(() => {
+    if (!isInitialized) return;
     if (!currentTenant || !currentRole) {
       if (location !== "/login") {
         setLocation("/login");
       }
     }
-  }, [currentTenant, currentRole, location, setLocation]);
+  }, [isInitialized, currentTenant, currentRole, location, setLocation]);
 
   if (location === "/login") {
     return <>{children}</>;
