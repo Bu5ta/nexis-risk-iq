@@ -43,10 +43,16 @@ async function createOutput(base) {
   await copyFile(path.join(repoRoot, "api", "index.js"), path.join(funcDir, "index.js"));
   await copyFile(path.join(repoRoot, "api", "server.mjs"), path.join(funcDir, "server.mjs"));
 
+  // Tell Vercel this is an ESM bundle — prevents CJS transpilation that breaks dynamic imports
+  await writeFile(
+    path.join(funcDir, "package.json"),
+    JSON.stringify({ type: "module" }, null, 2)
+  );
+
   await writeFile(
     path.join(funcDir, ".vc-config.json"),
     JSON.stringify(
-      { runtime: "nodejs22.x", handler: "index.js", maxDuration: 30, memory: 512 },
+      { runtime: "nodejs22.x", handler: "index.js", maxDuration: 30, memory: 512, launcherType: "Nodejs", shouldAddHelpers: false },
       null,
       2
     )
