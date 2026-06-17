@@ -12,13 +12,14 @@ const repoRoot = path.resolve(scriptDir, "..");
 const routes = {
   version: 3,
   routes: [
+    // API first — before filesystem so it's never shadowed by static files
+    { src: "/api(.*)", dest: "/api" },
     {
       src: "/assets/(.*)",
       headers: { "cache-control": "public, max-age=31536000, immutable" },
       continue: true,
     },
     { handle: "filesystem" },
-    { src: "/api/(.*)", dest: "/api/index" },
     { src: "/(.*)", dest: "/index.html" },
   ],
 };
@@ -36,8 +37,8 @@ async function createOutput(base) {
   await cp(viteDist, staticDir, { recursive: true });
   console.log(`  ✓ Static files → .vercel/output/static/`);
 
-  // 2. Serverless function
-  const funcDir = path.join(out, "functions", "api", "index.func");
+  // 2. Serverless function — named api.func so it maps to the /api path in routes
+  const funcDir = path.join(out, "functions", "api.func");
   await mkdir(funcDir, { recursive: true });
 
   // Copy as .mjs — Node.js always executes .mjs as ESM regardless of package.json,
@@ -53,7 +54,7 @@ async function createOutput(base) {
       2
     )
   );
-  console.log(`  ✓ Function → .vercel/output/functions/api/index.func/`);
+  console.log(`  ✓ Function → .vercel/output/functions/api.func/`);
 
   // 3. Routes config
   await writeFile(path.join(out, "config.json"), JSON.stringify(routes, null, 2));
