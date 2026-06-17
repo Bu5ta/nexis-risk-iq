@@ -1,4 +1,5 @@
-// Builds api/entry.ts → api/server.mjs for Vercel deployment
+// Builds build/api-entry.ts → api/server.mjs for Vercel deployment.
+// Lives in build/ (NOT api/) so Vercel does not treat it as a serverless function.
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,16 +8,17 @@ import { rm } from "node:fs/promises";
 
 globalThis.require = createRequire(import.meta.url);
 
-const apiDir = path.dirname(fileURLToPath(import.meta.url));
+const buildDir = path.dirname(fileURLToPath(import.meta.url));
+const repoRoot = path.resolve(buildDir, "..");
 
-await rm(path.join(apiDir, "server.mjs"), { force: true });
+await rm(path.join(repoRoot, "api", "server.mjs"), { force: true });
 
 await esbuild({
-  entryPoints: [path.join(apiDir, "entry.ts")],
+  entryPoints: [path.join(buildDir, "api-entry.ts")],
   platform: "node",
   bundle: true,
   format: "esm",
-  outfile: path.join(apiDir, "server.mjs"),
+  outfile: path.join(repoRoot, "api", "server.mjs"),
   logLevel: "info",
   external: [
     "*.node", "sharp", "bcrypt", "argon2", "fsevents", "pg-native",

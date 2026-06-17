@@ -7,7 +7,7 @@
     "build": "pnpm run typecheck && pnpm -r --if-present run build",
     "typecheck:libs": "tsc --build",
     "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
-    "vercel:build": "pnpm run typecheck:libs && node api/build.mjs && pnpm --filter @workspace/nexis run vercel:build && node scripts/vercel-finalize.mjs"
+    "vercel:build": "pnpm run typecheck:libs && node build/api-build.mjs && pnpm --filter @workspace/nexis run vercel:build && node scripts/vercel-finalize.mjs"
   },
   "private": true,
   "devDependencies": {
