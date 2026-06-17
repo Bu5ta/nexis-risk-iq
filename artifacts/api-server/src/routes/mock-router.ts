@@ -370,6 +370,291 @@ router.get("/tenants/:tenantId/reports/:reportId/content", (req, res) => {
   res.json(content);
 });
 
+// ─── Health alias ─────────────────────────────────────────────────────────────
+
+router.get("/healthz", (_req, res) => {
+  res.json({ status: "ok", mode: "mock" });
+});
+
+// ─── Controls: DELETE ──────────────────────────────────────────────────────────
+
+router.delete("/controls/:controlId", (req, res) => {
+  const { controlId } = req.params;
+  const ctrl = mutableControls.get(controlId);
+  if (!ctrl) return res.status(404).json({ error: "Control not found" });
+  const { actor, actorRole } = req.body ?? {};
+  mutableControls.delete(controlId);
+  mutableNotes.delete(controlId);
+  if (actor) {
+    addAuditEntry({ tenantId: ctrl.tenantId, actor, actorRole: actorRole || "Risk Manager", action: "Deleted Control", item: ctrl.control, itemId: controlId, timestamp: new Date().toISOString(), result: "Deleted", details: null });
+  }
+  res.json({ success: true });
+});
+
+// ─── Controls: named actions ───────────────────────────────────────────────────
+
+router.post("/controls/:controlId/actions", (req, res) => {
+  const { controlId } = req.params;
+  const ctrl = mutableControls.get(controlId);
+  if (!ctrl) return res.status(404).json({ error: "Control not found" });
+  const { action, actor = "Demo User", actorRole = "Risk Manager", note, assignee } = req.body ?? {};
+
+  type StatusPatch = {
+    implementationStatus?: typeof ctrl.implementationStatus;
+    isEscalated?: boolean;
+    escalatedAt?: string | null;
+    controlOwner?: string;
+    lastReviewed?: string | null;
+  };
+
+  let patch: StatusPatch = {};
+  let auditResult = "";
+  let activityAction = "";
+  let severity = "medium";
+
+  switch (action) {
+    case "mark_complete":
+      patch = { implementationStatus: "Implemented", lastReviewed: new Date().toISOString() };
+      auditResult = "Marked as Implemented"; activityAction = "Marked Complete"; severity = "low"; break;
+    case "mark_in_progress":
+      patch = { implementationStatus: "In Progress" };
+      auditResult = "Status changed to In Progress"; activityAction = "Updated Status"; break;
+    case "escalate":
+      patch = { implementationStatus: "Escalated", isEscalated: true, escalatedAt: new Date().toISOString() };
+      auditResult = "Escalated"; activityAction = "Escalated"; severity = "critical"; break;
+    case "assign_owner":
+      if (!assignee) return res.status(400).json({ error: "assignee is required for assign_owner action" });
+      patch = { controlOwner: assignee };
+      auditResult = `Owner assigned to ${assignee}`; activityAction = "Assigned Owner"; break;
+    case "mark_reviewed":
+      patch = { lastReviewed: new Date().toISOString() };
+      auditResult = "Marked as Reviewed"; activityAction = "Reviewed"; break;
+    case "revert_to_draft":
+      patch = { implementationStatus: "Draft", isEscalated: false, escalatedAt: null };
+      auditResult = "Reverted to Draft"; activityAction = "Reverted to Draft"; break;
+    default:
+      return res.status(400).json({ error: `Unknown action: ${action}` });
+  }
+
+  const updated = { ...ctrl, ...patch };
+  mutableControls.set(controlId, updated);
+  if (note) addNote(controlId, { controlId, content: note, author: actor, createdAt: new Date().toISOString() });
+  const auditEntry = addAuditEntry({ tenantId: ctrl.tenantId, actor, actorRole, action: activityAction, item: ctrl.control, itemId: controlId, timestamp: new Date().toISOString(), result: auditResult, details: note || null });
+  addActivityEntry({ tenantId: ctrl.tenantId, actor, actorRole, action: activityAction, item: ctrl.control, itemId: controlId, timestamp: new Date().toISOString(), result: auditResult, severity });
+  res.json({ success: true, control: updated, auditEntry });
+});
+
+// ─── Controls: tenanted import path alias ─────────────────────────────────────
+
+router.post("/tenants/:tenantId/controls/import", (req, res) => {
+  const { tenantId } = req.params;
+  const { rows, controls: legacyControls, actor, actorRole } = req.body as { rows?: Record<string, unknown>[]; controls?: Record<string, unknown>[]; actor?: string; actorRole?: string };
+  const imported = rows || legacyControls || [];
+  if (!Array.isArray(imported)) return res.status(400).json({ error: "rows array is required" });
+  const created = imported.map((row) => {
+    const ctrl = {
+      id: generateId("ctl"), tenantId,
+      department: String(row.department || ""),
+      departmentId: String(row.departmentId || ""),
+      risk: String(row.risk || ""),
+      riskId: generateId("rsk"),
+      control: String(row.control || ""),
+      controlOwner: String(row.controlOwner || ""),
+      implementationDate: String(row.implementationDate || new Date().toISOString().split("T")[0]),
+      residualRiskScore: Number(row.residualRiskScore) || 10,
+      withinAppetite: row.withinAppetite !== false && row.withinAppetite !== "false",
+      overallRiskLevel: (row.overallRiskLevel as "High" | "Medium" | "Low") || "Medium",
+      implementationStatus: (row.implementationStatus as typeof controls[0]["implementationStatus"]) || "Draft",
+      lastReviewed: null, noteCount: 0, isEscalated: false, escalatedAt: null,
+      riskDescription: String(row.riskDescription || ""),
+      controlDescription: String(row.controlDescription || ""),
+      inherentRiskScore: Number(row.inherentRiskScore) || 15,
+    };
+    mutableControls.set(ctrl.id, ctrl);
+    mutableNotes.set(ctrl.id, []);
+    return ctrl;
+  });
+  if (actor && created.length > 0) {
+    addAuditEntry({ tenantId, actor, actorRole: actorRole || "Risk Manager", action: "Imported", item: `${created.length} controls`, itemId: tenantId, timestamp: new Date().toISOString(), result: `${created.length} controls imported`, details: null });
+    addActivityEntry({ tenantId, actor, actorRole: actorRole || "Risk Manager", action: "Imported", item: `${created.length} controls`, itemId: tenantId, timestamp: new Date().toISOString(), result: `${created.length} controls imported`, severity: "medium" });
+  }
+  res.status(201).json({ imported: created.length, controls: created });
+});
+
+// ─── Reports: full detail ──────────────────────────────────────────────────────
+
+router.get("/tenants/:tenantId/reports/:reportId", (req, res) => {
+  const { tenantId, reportId } = req.params;
+  const report = reports.find(r => r.id === reportId && r.tenantId === tenantId);
+  if (!report) return res.status(404).json({ error: "Report not found" });
+  const content = getReportContent(reportId) || { summary: "No content available.", sections: [], recommendations: [] };
+  res.json({ ...report, ...content });
+});
+
+// ─── Activity feed ─────────────────────────────────────────────────────────────
+
+router.get("/tenants/:tenantId/activity", (req, res) => {
+  const { tenantId } = req.params;
+  const { limit } = req.query as Record<string, string>;
+  const entries = mutableActivity
+    .filter(a => a.tenantId === tenantId)
+    .sort((a, b) => b.timestamp.localeCompare(a.timestamp))
+    .slice(0, parseInt(limit || "20", 10));
+  res.json(entries);
+});
+
+// ─── AI: analytics (pure computation — no OpenAI needed) ──────────────────────
+
+router.get("/ai/analytics/:tenantId", (req, res) => {
+  const { tenantId } = req.params;
+  const ctrls = Array.from(mutableControls.values()).filter(c => c.tenantId === tenantId);
+  const trend = getImplementationTrend(tenantId);
+  const depts = departments.filter(d => d.tenantId === tenantId);
+  const kpis = computeKpis(tenantId);
+
+  const last3 = trend.slice(-3);
+  const overdueVelocity = last3.length >= 2 ? last3[last3.length - 1].overdue - last3[0].overdue : 0;
+  const implementedVelocity = last3.length >= 2 ? last3[last3.length - 1].implemented - last3[0].implemented : 0;
+
+  const scores = ctrls.map(c => c.residualRiskScore);
+  const mean = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+  const stdDev = Math.sqrt(scores.map(s => (s - mean) ** 2).reduce((a, b) => a + b, 0) / (scores.length || 1));
+
+  const anomalies = ctrls.filter(c => c.residualRiskScore > mean + stdDev).sort((a, b) => b.residualRiskScore - a.residualRiskScore).slice(0, 6).map(c => ({
+    id: c.id, control: c.control, department: c.department, residualScore: c.residualRiskScore,
+    zScore: parseFloat(((c.residualRiskScore - mean) / (stdDev || 1)).toFixed(2)), status: c.implementationStatus, riskLevel: c.overallRiskLevel,
+  }));
+
+  const trendData = trend.slice(-6);
+  const n = trendData.length;
+  const xMean = (n - 1) / 2;
+  const yValues = trendData.map(t => { const tot = t.implemented + t.inProgress + t.overdue; return tot > 0 ? Math.round((t.implemented / tot) * 100) : 0; });
+  const yMean = yValues.reduce((a, b) => a + b, 0) / (n || 1);
+  const slopeNum = trendData.reduce((sum, _, i) => sum + (i - xMean) * (yValues[i] - yMean), 0);
+  const slopeDen = trendData.reduce((sum, _, i) => sum + (i - xMean) ** 2, 0);
+  const slope = slopeDen !== 0 ? slopeNum / slopeDen : 0;
+
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const lastMonthIdx = new Date().getMonth();
+  const forecast = [1, 2, 3].map(offset => ({
+    month: monthNames[(lastMonthIdx + offset) % 12],
+    projected: Math.min(100, Math.max(0, Math.round(yMean + slope * (n - 1 + offset)))),
+    confidence: Math.max(60, 92 - offset * 10),
+  }));
+
+  const totalResidual = ctrls.reduce((sum, c) => sum + c.residualRiskScore, 0);
+  const deptConcentration = depts.map(d => {
+    const dc = ctrls.filter(c => c.department === d.name);
+    const dr = dc.reduce((sum, c) => sum + c.residualRiskScore, 0);
+    return { department: d.name, share: totalResidual > 0 ? parseFloat(((dr / totalResidual) * 100).toFixed(1)) : 0, residualTotal: dr, highRiskCount: d.highRiskCount, status: d.status };
+  }).sort((a, b) => b.share - a.share).slice(0, 6);
+
+  const totalInherent = ctrls.reduce((sum, c) => sum + c.inherentRiskScore, 0);
+  const reductionEfficiency = totalInherent > 0 ? parseFloat((((totalInherent - totalResidual) / totalInherent) * 100).toFixed(1)) : 0;
+
+  const criticalPath = ctrls.filter(c => c.implementationStatus === "Overdue" && c.overallRiskLevel === "High" && !c.withinAppetite).map(c => ({ id: c.id, control: c.control, department: c.department, owner: c.controlOwner, residualScore: c.residualRiskScore }));
+
+  const mlScore = Math.round(kpis.complianceRate * 0.4 + (1 - kpis.appetiteBreaches / Math.max(1, kpis.totalControls)) * 100 * 0.3 + reductionEfficiency * 0.3);
+
+  res.json({
+    riskVelocity: { overdueChange: overdueVelocity, implementedChange: implementedVelocity, trend: overdueVelocity > 0 ? "deteriorating" : overdueVelocity < 0 ? "improving" : "stable" },
+    anomalies, meanRiskScore: parseFloat(mean.toFixed(2)), stdDevRiskScore: parseFloat(stdDev.toFixed(2)),
+    forecast, deptConcentration, reductionEfficiency, criticalPath, mlScore,
+    trendHistory: trendData.map((t, i) => ({ month: t.month, complianceRate: yValues[i], implemented: t.implemented, overdue: t.overdue })),
+  });
+});
+
+// ─── AI: executive briefing (mock SSE — no OpenAI needed) ─────────────────────
+
+router.get("/ai/briefing/:tenantId", (req, res) => {
+  const { tenantId } = req.params;
+  const tenant = tenants.find(t => t.id === tenantId);
+  const kpis = computeKpis(tenantId);
+  const depts = departments.filter(d => d.tenantId === tenantId).sort((a, b) => a.complianceRate - b.complianceRate);
+  const ctrls = Array.from(mutableControls.values()).filter(c => c.tenantId === tenantId);
+  const overdue = ctrls.filter(c => c.implementationStatus === "Overdue");
+  const breaches = ctrls.filter(c => !c.withinAppetite);
+  const worstDept = depts[0];
+
+  const posture = kpis.complianceRate >= 85 ? "strong" : kpis.complianceRate >= 70 ? "moderate" : "concerning";
+  const trend = kpis.overdueActions > 5 ? "deteriorating" : kpis.overdueActions > 2 ? "stable" : "improving";
+
+  const briefing = `**Risk Posture**\n${tenant?.name} presents a **${posture}** overall risk posture with a compliance rate of **${kpis.complianceRate}%** against a 90% target. ${kpis.implementedControls} of ${kpis.totalControls} controls are fully implemented. The portfolio trend is **${trend}**, with ${kpis.appetiteBreaches} appetite breaches requiring board attention.\n\n**Priority Actions**\n1. 🔴 Critical — Resolve ${overdue.length} overdue control${overdue.length !== 1 ? "s" : ""}${overdue.length > 0 ? `, including: *${overdue.slice(0, 2).map(c => c.control).join("; ")}*` : ""}. Immediate action required to prevent regulatory exposure.\n2. 🟡 High — Address ${breaches.length} risk appetite breach${breaches.length !== 1 ? "es" : ""}. ${breaches.length > 0 ? `Highest residual risk: ${breaches.sort((a,b) => b.residualRiskScore - a.residualRiskScore)[0]?.control}.` : "Portfolio is within appetite bounds."}\n3. 🟢 Medium — ${worstDept ? `${worstDept.name} department requires targeted intervention (${worstDept.complianceRate}% compliant, ${worstDept.overdueCount} overdue items).` : "Continue monitoring department-level compliance metrics."}\n\n**Key Trend**\nImplementation velocity ${trend === "improving" ? "is on an upward trajectory — momentum should be sustained through Q3 with focused resource allocation." : trend === "stable" ? "remains flat — a targeted remediation sprint is recommended to accelerate the ${kpis.totalControls - kpis.implementedControls} remaining controls." : "shows signs of pressure — escalated items require board-level intervention and clear ownership assignment this quarter."}`;
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const words = briefing.split(/(\s+)/);
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= words.length) {
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+      clearInterval(interval);
+      return;
+    }
+    const chunk = words.slice(i, i + 3).join("");
+    res.write(`data: ${JSON.stringify({ content: chunk })}\n\n`);
+    i += 3;
+  }, 30);
+
+  req.on("close", () => clearInterval(interval));
+});
+
+// ─── AI: chat (mock SSE — no OpenAI needed) ───────────────────────────────────
+
+router.post("/ai/chat", (req, res) => {
+  const { tenantId, messages } = req.body as { tenantId: string; messages: Array<{ role: string; content: string }> };
+  const kpis = computeKpis(tenantId);
+  const ctrls = Array.from(mutableControls.values()).filter(c => c.tenantId === tenantId);
+  const depts = departments.filter(d => d.tenantId === tenantId);
+  const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content?.toLowerCase() || "";
+
+  let response = "";
+
+  if (lastUserMsg.includes("overdue")) {
+    const overdue = ctrls.filter(c => c.implementationStatus === "Overdue");
+    response = `There are currently **${overdue.length} overdue controls** across your portfolio.\n\nTop items requiring immediate attention:\n${overdue.slice(0, 5).map((c, i) => `${i + 1}. **${c.control}** — ${c.department} | Owner: ${c.controlOwner} | Residual Score: ${c.residualRiskScore}`).join("\n")}\n\nI recommend scheduling a remediation sprint with the respective department heads this week.`;
+  } else if (lastUserMsg.includes("high risk") || lastUserMsg.includes("high-risk")) {
+    const high = ctrls.filter(c => c.overallRiskLevel === "High");
+    response = `Your portfolio contains **${high.length} high-risk controls** (${Math.round((high.length / Math.max(1, kpis.totalControls)) * 100)}% of total).\n\nTop by residual risk score:\n${high.sort((a, b) => b.residualRiskScore - a.residualRiskScore).slice(0, 5).map((c, i) => `${i + 1}. **${c.control}** — Score: ${c.residualRiskScore} | ${c.implementationStatus}`).join("\n")}\n\nFocusing on these controls will yield the greatest reduction in overall risk exposure.`;
+  } else if (lastUserMsg.includes("appetite") || lastUserMsg.includes("breach")) {
+    const breaches = ctrls.filter(c => !c.withinAppetite);
+    response = `There are **${breaches.length} appetite breaches** in your current portfolio — controls where residual risk exceeds the board-approved tolerance.\n\n${breaches.slice(0, 4).map((c, i) => `${i + 1}. **${c.control}** — ${c.department} | Score: ${c.residualRiskScore}`).join("\n")}\n\nThese must be reported to the Risk Committee and remediation plans escalated within 30 days per policy.`;
+  } else if (lastUserMsg.includes("department") || lastUserMsg.includes("dept")) {
+    response = `**Department Risk Summary:**\n\n${depts.slice(0, 6).map(d => `• **${d.name}**: ${d.complianceRate}% compliant | ${d.highRiskCount} high-risk | ${d.overdueCount} overdue | Status: **${d.status}**`).join("\n")}\n\n${depts.filter(d => d.status === "Critical").length > 0 ? `⚠️ ${depts.filter(d => d.status === "Critical").length} department(s) are in Critical status and require immediate intervention.` : "All departments are within acceptable performance bands."}`;
+  } else if (lastUserMsg.includes("compliance") || lastUserMsg.includes("rate")) {
+    response = `Current **compliance rate is ${kpis.complianceRate}%** against a 90% target.\n\n**Breakdown:**\n• Implemented: ${kpis.implementedControls} controls\n• In Progress: ${ctrls.filter(c => c.implementationStatus === "In Progress").length}\n• Overdue: ${kpis.overdueActions}\n• Draft: ${ctrls.filter(c => c.implementationStatus === "Draft").length}\n\n${kpis.complianceRate >= 90 ? "✅ You are meeting the target. Maintain momentum." : kpis.complianceRate >= 75 ? "🟡 You are tracking below target. Focus on in-progress items to close the gap." : "🔴 Significant gap to target. An urgent remediation programme is recommended."}`;
+  } else if (lastUserMsg.includes("escalat")) {
+    const escalated = ctrls.filter(c => c.isEscalated);
+    response = `There are **${escalated.length} escalated control${escalated.length !== 1 ? "s" : ""}** currently requiring senior management attention:\n\n${escalated.slice(0, 5).map((c, i) => `${i + 1}. **${c.control}** — ${c.department} | Owner: ${c.controlOwner}`).join("\n") || "No controls are currently escalated."}\n\nEscalated items should be reviewed at the next Risk Committee meeting.`;
+  } else if (lastUserMsg.includes("recommend") || lastUserMsg.includes("priorit")) {
+    response = `Based on your current risk posture, here are my top recommendations:\n\n1. **Resolve overdue controls** (${kpis.overdueActions} items) — assign clear owners and set 2-week resolution deadlines.\n2. **Address appetite breaches** (${kpis.appetiteBreaches} items) — prepare a breach remediation report for the board.\n3. **Focus on ${depts.sort((a, b) => a.complianceRate - b.complianceRate)[0]?.name || "lowest-performing departments"}** — targeted resource allocation will have the highest impact.\n4. **Review escalated items** — ensure executive sponsors are assigned and action plans are in place.\n5. **Update draft controls** (${ctrls.filter(c => c.implementationStatus === "Draft").length} items) — move to active implementation to improve the compliance rate.`;
+  } else {
+    response = `Your current risk intelligence summary:\n\n**Compliance Rate:** ${kpis.complianceRate}% (target: 90%)\n**Total Controls:** ${kpis.totalControls} | Implemented: ${kpis.implementedControls}\n**Overdue:** ${kpis.overdueActions} | Appetite Breaches: ${kpis.appetiteBreaches}\n**Escalated Items:** ${kpis.escalatedItems} | High Risk: ${kpis.highRiskItems}\n\nAsk me about specific areas — overdue controls, high-risk items, appetite breaches, department performance, or recommendations — and I'll provide targeted analysis.`;
+  }
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const words = response.split(/(\s+)/);
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i >= words.length) {
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      res.end();
+      clearInterval(interval);
+      return;
+    }
+    res.write(`data: ${JSON.stringify({ content: words.slice(i, i + 3).join("") })}\n\n`);
+    i += 3;
+  }, 25);
+
+  req.on("close", () => clearInterval(interval));
+});
+
 // ─── Users ────────────────────────────────────────────────────────────────────
 
 router.get("/tenants/:tenantId/users", (req, res) => {

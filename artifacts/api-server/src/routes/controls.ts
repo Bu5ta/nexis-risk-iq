@@ -295,6 +295,91 @@ router.patch("/controls/:controlId", async (req, res) => {
   res.json({ success: true, control: updatedControl, auditEntry });
 });
 
+// POST /api/controls/:controlId/actions — unified action endpoint (mirrors PATCH logic)
+router.post("/controls/:controlId/actions", async (req, res) => {
+  const { controlId } = req.params;
+  const { action, actor = "System", actorRole = "Risk Manager", note, assignee } = req.body ?? {};
+
+  const [control] = await db.select().from(controls).where(eq(controls.id, controlId));
+  if (!control) return res.status(404).json({ error: "Control not found" });
+
+  type StatusPatch = {
+    implementationStatus?: (typeof control)["implementationStatus"];
+    isEscalated?: boolean;
+    escalatedAt?: string | null;
+    controlOwner?: string;
+    lastReviewed?: string;
+  };
+
+  let patch: StatusPatch = {};
+  let auditResult = "";
+  let activityAction = "";
+  let severity = "medium";
+
+  switch (action) {
+    case "mark_complete":
+      patch = { implementationStatus: "Implemented", lastReviewed: new Date().toISOString() };
+      auditResult = "Marked as Implemented"; activityAction = "Marked Complete"; severity = "low"; break;
+    case "mark_in_progress":
+      patch = { implementationStatus: "In Progress" };
+      auditResult = "Status changed to In Progress"; activityAction = "Updated Status"; break;
+    case "escalate":
+      patch = { implementationStatus: "Escalated", isEscalated: true, escalatedAt: new Date().toISOString() };
+      auditResult = "Escalated"; activityAction = "Escalated"; severity = "critical"; break;
+    case "assign_owner":
+      if (!assignee) return res.status(400).json({ error: "assignee is required for assign_owner action" });
+      patch = { controlOwner: assignee };
+      auditResult = `Owner assigned to ${assignee}`; activityAction = "Assigned Owner"; break;
+    case "mark_reviewed":
+      patch = { lastReviewed: new Date().toISOString() };
+      auditResult = "Marked as Reviewed"; activityAction = "Reviewed"; break;
+    case "revert_to_draft":
+      patch = { implementationStatus: "Draft", isEscalated: false, escalatedAt: null };
+      auditResult = "Reverted to Draft"; activityAction = "Reverted to Draft"; break;
+    default:
+      return res.status(400).json({ error: `Unknown action: ${action}` });
+  }
+
+  const [updatedControl] = await db
+    .update(controls)
+    .set({ ...patch, updatedAt: new Date() })
+    .where(eq(controls.id, controlId))
+    .returning();
+
+  if (note) {
+    await db.insert(notes).values({ id: generateId("note"), controlId, content: note, author: actor });
+    await db.update(controls).set({ noteCount: control.noteCount + 1 }).where(eq(controls.id, controlId));
+  }
+
+  const [auditEntry] = await db.insert(auditLog).values({
+    id: generateId("aud"),
+    tenantId: control.tenantId,
+    actor,
+    actorRole,
+    action: activityAction,
+    item: control.control,
+    itemId: controlId,
+    timestamp: new Date().toISOString(),
+    result: auditResult,
+    details: note || null,
+  }).returning();
+
+  await db.insert(activityFeed).values({
+    id: generateId("act"),
+    tenantId: control.tenantId,
+    actor,
+    actorRole,
+    action: activityAction,
+    item: control.control,
+    itemId: controlId,
+    timestamp: new Date().toISOString(),
+    result: auditResult,
+    severity,
+  });
+
+  res.json({ success: true, control: updatedControl, auditEntry });
+});
+
 // POST /api/controls/:controlId/notes
 router.post("/controls/:controlId/notes", async (req, res) => {
   const { controlId } = req.params;
