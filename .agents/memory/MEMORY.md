@@ -1,2 +1,3 @@
 - [Missing API endpoints audit](missing-endpoints.md) — 10 endpoints were missing from mock/DB routes; all fixed in commit 2308553.
 - [AI fallback pattern](ai-fallback.md) — ai.ts briefing+chat now fall back to computed mock SSE when OpenAI fails; never show error to user.
+- [Department detail data shape mismatch](dept-detail-shape.md) — mock-router returned wrong shapes for DepartmentDetail; always match the DB route's response shape.
