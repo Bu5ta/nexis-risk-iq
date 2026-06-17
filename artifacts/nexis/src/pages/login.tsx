@@ -305,34 +305,39 @@ function DemoPicker({ onBack }: { onBack: () => void }) {
 
 function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; onDemo: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
-      <div className="flex items-center gap-3 mb-6">
+    <div className="flex flex-col items-center justify-between h-full text-center py-2">
+      {/* Logo */}
+      <div className="flex items-center gap-2.5">
         <img
           src={`${BASE}images/nexis-icon.svg`}
           alt="NEXIS"
-          className="w-12 h-12 drop-shadow-[0_0_16px_rgba(0,212,255,0.4)]"
+          className="w-9 h-9 drop-shadow-[0_0_12px_rgba(0,212,255,0.4)]"
         />
         <div className="text-left">
-          <div className="text-2xl font-bold tracking-tight leading-tight">NEXIS</div>
-          <div className="text-base font-light text-primary leading-tight">Risk-IQ</div>
+          <div className="text-xl font-bold tracking-tight leading-tight">NEXIS</div>
+          <div className="text-sm font-light text-primary leading-tight">Risk-IQ</div>
         </div>
       </div>
 
-      <h1 className="text-3xl font-bold tracking-tight mb-3">
-        Governance, Risk &amp; Compliance<br />
-        <span className="text-primary">for Botswana organisations</span>
-      </h1>
-      <p className="text-muted-foreground max-w-sm mb-10">
-        The modern GRC platform built for public, parastatal, and private sector — manual-first, no IT integration required.
-      </p>
+      {/* Headline */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight mb-2">
+          Governance, Risk &amp; Compliance<br />
+          <span className="text-primary">for Botswana organisations</span>
+        </h1>
+        <p className="text-muted-foreground text-sm max-w-sm mx-auto">
+          The modern GRC platform built for public, parastatal, and private sector — manual-first, no IT integration required.
+        </p>
+      </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-md mb-10">
+      {/* Action buttons */}
+      <div className="grid grid-cols-2 gap-3 w-full max-w-md">
         <button
           onClick={onCompanyLogin}
-          className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-primary/40 bg-primary/5 hover:bg-primary/10 hover:border-primary/70 transition-all group"
+          className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-primary/40 bg-primary/5 hover:bg-primary/10 hover:border-primary/70 transition-all group"
         >
-          <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
-            <Shield className="w-6 h-6 text-primary" />
+          <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+            <Shield className="w-5 h-5 text-primary" />
           </div>
           <div>
             <div className="font-semibold text-sm">Sign In</div>
@@ -342,10 +347,10 @@ function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; o
 
         <button
           onClick={onDemo}
-          className="flex flex-col items-center gap-3 p-6 rounded-2xl border-2 border-muted hover:border-muted-foreground/40 bg-muted/30 hover:bg-muted/50 transition-all group"
+          className="flex flex-col items-center gap-2 p-4 rounded-2xl border-2 border-muted hover:border-muted-foreground/40 bg-muted/30 hover:bg-muted/50 transition-all group"
         >
-          <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
-            <BarChart3 className="w-6 h-6 text-muted-foreground" />
+          <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+            <BarChart3 className="w-5 h-5 text-muted-foreground" />
           </div>
           <div>
             <div className="font-semibold text-sm">Explore Demo</div>
@@ -354,31 +359,30 @@ function LandingView({ onCompanyLogin, onDemo }: { onCompanyLogin: () => void; o
         </button>
       </div>
 
-      <ul className="space-y-2 text-left w-full max-w-sm mb-10">
+      {/* Feature list */}
+      <ul className="space-y-1.5 text-left w-full max-w-sm">
         {FEATURES.map((f, i) => (
-          <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-            <f.icon className="w-4 h-4 mt-0.5 text-primary shrink-0" />
+          <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground">
+            <f.icon className="w-3.5 h-3.5 mt-0.5 text-primary shrink-0" />
             {f.text}
           </li>
         ))}
       </ul>
 
       {/* Partnership footer */}
-      <div className="flex flex-col items-center gap-3 border-t pt-6 w-full max-w-sm">
-        <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
-          A NEXIS product · In partnership with
-        </p>
-        <div className="flex items-center gap-3">
-          <div className="bg-white rounded-xl overflow-hidden shrink-0" style={{ width: 44, height: 44 }}>
+      <div className="flex items-center justify-center gap-3 border-t pt-3 w-full max-w-sm">
+        <p className="text-xs text-muted-foreground">A NEXIS product · In partnership with</p>
+        <div className="flex items-center gap-2 shrink-0">
+          <div className="bg-white rounded-lg overflow-hidden shrink-0" style={{ width: 28, height: 28 }}>
             <img
               src={`${BASE}images/riskinteg-brochure.jpg`}
               alt="RiskInteg"
-              style={{ width: 44, height: 44, objectFit: "contain" }}
+              style={{ width: 28, height: 28, objectFit: "contain" }}
             />
           </div>
           <div className="text-left">
-            <div className="text-sm font-semibold">RiskInteg Solution Services</div>
-            <div className="text-xs text-muted-foreground">info@riskinteg.co.bw</div>
+            <div className="text-xs font-semibold leading-tight">RiskInteg</div>
+            <div className="text-xs text-muted-foreground leading-tight">info@riskinteg.co.bw</div>
           </div>
         </div>
       </div>
@@ -462,8 +466,8 @@ export default function Login() {
       </div>
 
       {/* ── Right content panel ── */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12 overflow-y-auto">
-        <div className="w-full max-w-lg h-full flex flex-col justify-center py-8">
+      <div className="flex-1 flex flex-col items-center justify-center p-4 lg:p-8 overflow-y-auto">
+        <div className="w-full max-w-lg h-full flex flex-col justify-center py-2">
           {view === "landing" && (
             <LandingView
               onCompanyLogin={() => setView("company")}
