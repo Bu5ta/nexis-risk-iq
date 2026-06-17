@@ -52,7 +52,8 @@ Thumbs.db
 api/server.mjs
 api/server.mjs.map
 
-# Vercel build output (config.json is committed so Vercel detects Build Output API mode pre-build)
+# Vercel build output — fully generated at build time, never committed
+# (committing .vercel/output/ causes Vercel to skip the build entirely)
 artifacts/nexis/dist/
-.vercel/output/static/
-.vercel/output/functions/
+.vercel/output/
+artifacts/api-server/.vercel/output/
