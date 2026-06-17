@@ -125,20 +125,41 @@ router.get("/tenants/:tenantId/departments/:departmentId", (req, res) => {
   const deptControls = Array.from(mutableControls.values()).filter(
     c => c.tenantId === tenantId && c.departmentId === departmentId
   );
-  const riskBreakdown = {
-    high: deptControls.filter(c => c.overallRiskLevel === "High").length,
-    medium: deptControls.filter(c => c.overallRiskLevel === "Medium").length,
-    low: deptControls.filter(c => c.overallRiskLevel === "Low").length,
-  };
-  const statusBreakdown = {
-    implemented: deptControls.filter(c => c.implementationStatus === "Implemented").length,
-    inProgress: deptControls.filter(c => c.implementationStatus === "In Progress").length,
-    overdue: deptControls.filter(c => c.implementationStatus === "Overdue").length,
-    draft: deptControls.filter(c => c.implementationStatus === "Draft").length,
-    awaitingReview: deptControls.filter(c => c.implementationStatus === "Awaiting Review").length,
-  };
-  const deptUsers = users.filter(u => u.tenantId === tenantId && u.department === dept.name);
-  res.json({ ...dept, riskBreakdown, statusBreakdown, users: deptUsers, controls: deptControls });
+
+  const total = deptControls.length;
+  const implemented = deptControls.filter(c => c.implementationStatus === "Implemented").length;
+  const complianceRate = total > 0 ? Math.round((implemented / total) * 100) : dept.complianceRate;
+
+  const high   = deptControls.filter(c => c.overallRiskLevel === "High").length;
+  const medium = deptControls.filter(c => c.overallRiskLevel === "Medium").length;
+  const low    = deptControls.filter(c => c.overallRiskLevel === "Low").length;
+
+  const riskBreakdown = [
+    { level: "High",   count: high,   percentage: total > 0 ? Math.round((high   / total) * 100) : 0 },
+    { level: "Medium", count: medium, percentage: total > 0 ? Math.round((medium / total) * 100) : 0 },
+    { level: "Low",    count: low,    percentage: total > 0 ? Math.round((low    / total) * 100) : 0 },
+  ];
+
+  const overdueItems = deptControls.filter(
+    c => c.implementationStatus === "Overdue" || c.implementationStatus === "Escalated"
+  );
+
+  const ownerMap: Record<string, { owner: string; controlCount: number; overdueCount: number }> = {};
+  deptControls.forEach(c => {
+    if (!ownerMap[c.controlOwner]) ownerMap[c.controlOwner] = { owner: c.controlOwner, controlCount: 0, overdueCount: 0 };
+    ownerMap[c.controlOwner].controlCount++;
+    if (c.implementationStatus === "Overdue" || c.implementationStatus === "Escalated") ownerMap[c.controlOwner].overdueCount++;
+  });
+  const accountability = Object.values(ownerMap).map(o => ({
+    ...o,
+    complianceRate: o.controlCount > 0 ? Math.round(((o.controlCount - o.overdueCount) / o.controlCount) * 100) : 100,
+  }));
+
+  res.json({
+    id: dept.id, name: dept.name, head: dept.head, description: dept.description,
+    complianceRate, controls: deptControls,
+    riskBreakdown, overdueItems, accountability,
+  });
 });
 
 // ─── Controls ─────────────────────────────────────────────────────────────────

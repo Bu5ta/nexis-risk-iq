@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TenantProvider } from "@/lib/tenant-context";
 import { AppLayout } from "@/components/layout";
+import { ErrorBoundary } from "@/components/error-boundary";
 import NotFound from "@/pages/not-found";
 
 import Login from "@/pages/login";
@@ -22,19 +23,21 @@ const queryClient = new QueryClient();
 function Router() {
   return (
     <AppLayout>
-      <Switch>
-        <Route path="/login" component={Login} />
-        <Route path="/dashboard" component={Dashboard} />
-        <Route path="/register" component={Register} />
-        <Route path="/departments" component={Departments} />
-        <Route path="/departments/:id" component={DepartmentDetail} />
-        <Route path="/reports" component={Reports} />
-        <Route path="/audit" component={Audit} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/risksight" component={RiskSightAI} />
-        <Route path="/" component={Dashboard} />
-        <Route component={NotFound} />
-      </Switch>
+      <ErrorBoundary>
+        <Switch>
+          <Route path="/login" component={Login} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/register" component={Register} />
+          <Route path="/departments" component={Departments} />
+          <Route path="/departments/:id" component={DepartmentDetail} />
+          <Route path="/reports" component={Reports} />
+          <Route path="/audit" component={Audit} />
+          <Route path="/admin" component={Admin} />
+          <Route path="/risksight" component={RiskSightAI} />
+          <Route path="/" component={Dashboard} />
+          <Route component={NotFound} />
+        </Switch>
+      </ErrorBoundary>
     </AppLayout>
   );
 }
